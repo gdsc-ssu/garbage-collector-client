@@ -47,5 +47,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Garbage Collector 앱을 원활하게 사용하려면 위치 권한을 허용해야합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Garbage Collector 앱을 원활하게 사용하려면 카메라 권한을 허용해야합니다.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Garbage Collector 앱을 원활하게 사용하려면 음성녹음 권한을 허용해야합니다.</string>
 </dict>
 </plist>
