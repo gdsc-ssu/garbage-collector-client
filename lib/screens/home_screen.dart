@@ -21,7 +21,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, initialIndex: 0, vsync: this);
+    _tabController = TabController(length: 3, initialIndex: 1, vsync: this);
   }
 
   void _onTapNavigator(int index) async {
@@ -43,34 +43,35 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
+      initialIndex: 1,
       child: Scaffold(
         key: _scaffoldKey,
         body: SafeArea(
           child: TabBarView(
             controller: _tabController,
             physics: const NeverScrollableScrollPhysics(),
-            children: [
-              const MainMap(),
-              Container(),
-              const RankScreen(),
+            children: const [
+              CollectionScreen(),
+              MainMap(),
+              RankScreen(),
             ],
           ),
         ),
         bottomNavigationBar: SizedBox(
-          height: 80,
+          height: 60,
           child: TabBar(
             onTap: _onTapNavigator,
             tabs: const [
               Tab(
                 icon: Icon(
-                  Icons.home,
+                  Icons.list_alt,
                   color: ColorSystem.primary,
                   size: 30,
                 ),
               ),
               Tab(
                 icon: Icon(
-                  Icons.list_alt,
+                  Icons.home,
                   color: ColorSystem.primary,
                   size: 30,
                 ),
