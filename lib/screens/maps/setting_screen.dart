@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/widgets/widgets.dart';
+import 'package:get/get.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -8,10 +12,35 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreen extends State<SettingScreen> {
+  final _globalStates = Get.find<GlobalState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: '설정'),
+      appBar: CustomAppBar(
+        title: '설정',
+        actions: [
+          GestureDetector(
+            onTap: () async {
+              final user = await _globalStates.googleAuth();
+              if (user == null) {
+                return;
+              }
+              log(user.additionalUserInfo.toString());
+              log(user.credential.toString());
+              log(user.user.toString());
+            },
+            child: Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                border: Border.all(),
+              ),
+              child: Text('로그인'),
+            ),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(10),
         child: Column(
