@@ -16,7 +16,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.5
   google_maps_flutter: ^2.2.3
-  flutter_svg: ^1.1.6
+  flutter_svg: ^2.0.0+1
   fluttertoast: ^8.1.2
   camera:
     git:
@@ -25,6 +25,11 @@ dependencies:
       ref: 9e46048ad2e1f085c1e8f6c77391fa52025e681f
   path_provider: ^2.0.12
   path: ^1.8.2
+  location: ^4.4.0
+  carousel_slider: ^4.2.1
+  google_sign_in: ^5.4.4
+  firebase_auth: ^4.2.6
+  firebase_core: ^2.5.0
 
 dev_dependencies:
   flutter_test:

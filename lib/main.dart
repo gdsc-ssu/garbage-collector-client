@@ -4,9 +4,12 @@ import 'package:get/get.dart';
 import 'package:garbage_collector/screens/screens.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:garbage_collector/styles/styles.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   //Firebase init
   runApp(const GarbageCollector());
 }
