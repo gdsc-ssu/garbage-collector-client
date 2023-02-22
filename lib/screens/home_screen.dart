@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/styles/color.dart';
+import 'package:garbage_collector/utils/utils.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,6 +20,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   final _globalStates = Get.find<GlobalState>();
 
   late final TabController _tabController;
+  int _index = 1;
   bool _isPoping = false;
 
   @override
@@ -28,16 +32,21 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   void _onTapNavigator(int index) async {
     HapticFeedback.lightImpact();
 
+    if (index == _index) return;
+
+    if (_index == 1) {
+      _globalStates.changeLocation(
+        await _globalStates.mapController.getLatLng(ScreenCoordinate(
+          x: Get.width ~/ 2,
+          y: (Get.height - 140) ~/ 2,
+        )),
+      );
+    }
+
     setState(() {
       _tabController.animateTo(index);
+      _index = index;
     });
-
-    _globalStates.changeLocation(
-      await _globalStates.mapController.getLatLng(ScreenCoordinate(
-        x: Get.width ~/ 2,
-        y: (Get.height - 140) ~/ 2,
-      )),
-    );
   }
 
   @override
@@ -67,31 +76,52 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
 
             return true;
           }),
+          child: SafeArea(
+            child: TabBarView(
+              controller: _tabController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: [
+                const CollectionScreen(),
+                Navigator(
+                  key: GlobalState.navigatorKey,
+                  onGenerateRoute: ((settings) {
+                    return MaterialPageRoute(builder: ((context) {
+                      return const MainMap();
+                    }));
+                  }),
+                ),
+                // MainMap(),
+                const RankScreen(),
+              ],
+            ),
           ),
         ),
-        bottomNavigationBar: SizedBox(
+        bottomNavigationBar: Container(
           height: 60,
+          decoration: const BoxDecoration(color: Colors.white, border: null),
           child: TabBar(
+            indicator: const BoxDecoration(),
+            indicatorColor: null,
             onTap: _onTapNavigator,
-            tabs: const [
+            tabs: [
               Tab(
                 icon: Icon(
                   Icons.list_alt,
-                  color: ColorSystem.primary,
+                  color: (_index == 0) ? ColorSystem.primary : Colors.grey,
                   size: 30,
                 ),
               ),
               Tab(
                 icon: Icon(
                   Icons.home,
-                  color: ColorSystem.primary,
+                  color: (_index == 1) ? ColorSystem.primary : Colors.grey,
                   size: 30,
                 ),
               ),
               Tab(
                 icon: Icon(
                   Icons.wine_bar,
-                  color: ColorSystem.primary,
+                  color: (_index == 2) ? ColorSystem.primary : Colors.grey,
                   size: 30,
                 ),
               ),
