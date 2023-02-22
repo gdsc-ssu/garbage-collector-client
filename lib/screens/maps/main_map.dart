@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/styles/color.dart';
@@ -31,6 +30,7 @@ class _MainMap extends State<MainMap> {
             },
             initialCameraPosition:
                 CameraPosition(target: _globalStates.latlng, zoom: 16),
+            myLocationEnabled: true,
             myLocationButtonEnabled: false,
             markers: _globalStates.markerList,
           ),
@@ -106,6 +106,28 @@ class _MainMap extends State<MainMap> {
                     child: const Text(
                       '-',
                       style: TextStyle(color: Colors.white, fontSize: 21),
+                    ))),
+          ),
+          Positioned(
+            right: 10,
+            bottom: 130,
+            child: GestureDetector(
+                onTap: () async {
+                  //TODO 터치 시 검색
+                },
+                child: Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: ColorSystem.primary,
+                        borderRadius: BorderRadius.circular(5),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.5))),
+                    child: const Icon(
+                      Icons.refresh,
+                      color: Colors.white,
+                      size: 24,
                     ))),
           ),
           Positioned(
