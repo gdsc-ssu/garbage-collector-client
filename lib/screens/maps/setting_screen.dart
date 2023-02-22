@@ -81,11 +81,11 @@ class _SettingScreen extends State<SettingScreen> {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [Text('닉네임'), Text('설명')],
+                  children: const [Text('닉네임'), Text('설명')],
                 ),
               ],
             ),
-            Text('주로 처리한 쓰레기'),
+            const Text('주로 처리한 쓰레기'),
             Row(
               children: [
                 Container(
@@ -147,7 +147,10 @@ class _SettingScreen extends State<SettingScreen> {
               ],
             ),
             Text('개발자에게 문의하기'),
-            Text('로그아웃'),
+            GestureDetector(
+              onTap: () async {},
+              child: Text('로그아웃'),
+            ),
           ],
         ),
       ),
