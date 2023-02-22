@@ -51,7 +51,9 @@ ios/Runner/AppDelegate.swift
 
 # firebase datas
 /android/app/google-services.json
-/android/google-services.json
 ios/firebase_app_id_file.json
 ios/Runner/GoogleService-Info.plist
-firebase_options.dart
+lib/firebase_options.dart
+
+# environment data file
+lib/env/env.dart
