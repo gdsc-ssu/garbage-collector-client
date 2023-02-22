@@ -1,6 +1,8 @@
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/states/states.dart';
+import 'package:garbage_collector/screens/screens.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final bool allowBackButton;
@@ -82,5 +84,31 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
       }(),
       actions: actions,
     );
+  }
+}
+
+class GoingBackButton extends StatelessWidget {
+  const GoingBackButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+        onTap: () {
+          GlobalState.navigatorKey.currentState!
+              .push(MaterialPageRoute(builder: ((context) {
+            return const MainMap();
+          })));
+        },
+        child: Container(
+          padding: const EdgeInsets.all(5),
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+          ),
+          child: const Icon(
+            Icons.chevron_left_rounded,
+            size: 30,
+          ),
+        ));
   }
 }
