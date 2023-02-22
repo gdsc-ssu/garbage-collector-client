@@ -9,8 +9,9 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  //Firebase init
+  await Firebase.initializeApp(
+      name: 'Garbage-Collector',
+      options: DefaultFirebaseOptions.currentPlatform);
   runApp(const GarbageCollector());
 }
 
