@@ -134,12 +134,23 @@ class _MainMap extends State<MainMap> {
               alignment: Alignment.bottomCenter,
               child: GestureDetector(
                 onTap: () {
-                  Get.to(() => const CameraScreen());
+                  GlobalState.navigatorKey.currentState!
+                      .push(MaterialPageRoute(builder: ((context) {
+                    return const CameraScreen();
+                  })));
+                  // Get.to(() => const CameraScreen());
                 },
-                child: SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: SvgPicture.asset('assets/icons/camera_example.svg')),
+                child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: ColorSystem.primary,
+                    ),
+                    child: const Icon(
+                      Icons.camera,
+                      size: 40,
+                      color: Colors.white,
+                    )),
               ),
             ),
           ),
