@@ -1,9 +1,13 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/models/models.dart' as models;
 import 'package:garbage_collector/states/states.dart';
+import 'package:garbage_collector/utils/utils.dart';
 import 'package:garbage_collector/widgets/widgets.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -21,13 +25,33 @@ class _SettingScreen extends State<SettingScreen> {
         actions: [
           GestureDetector(
             onTap: () async {
-              final user = await _globalStates.googleAuth();
-              if (user == null) {
-                return;
+              try {
+                final googleUser = await _globalStates.googleAuth();
+
+                if (googleUser == null) {
+                  showToast('구글 로그인 중 오류 발생했습니다.');
+                  return;
+                }
+                final GoogleSignInAuthentication googleAuth =
+                    await googleUser.authentication;
+
+                final credential = GoogleAuthProvider.credential(
+                  accessToken: googleAuth.accessToken,
+                  idToken: googleAuth.idToken,
+                );
+
+                final user = await models.User.googleLogin(
+                  googleUser.displayName!,
+                  googleUser.email,
+                  credential.accessToken!,
+                  googleUser.photoUrl!,
+                );
+
+                _globalStates.login(user);
+                setState(() {});
+              } catch (e, s) {
+                log(e.toString(), stackTrace: s);
               }
-              log(user.additionalUserInfo.toString());
-              log(user.credential.toString());
-              log(user.user.toString());
             },
             child: Container(
               alignment: Alignment.center,
