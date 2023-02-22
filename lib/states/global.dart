@@ -12,6 +12,7 @@ import 'package:location/location.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class GlobalState extends GetxController {
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Rxn<models.User> user = Rxn<models.User>();
   RxMap<String, Marker> markers = RxMap<String, Marker>({});
   String token = "";
@@ -21,18 +22,11 @@ class GlobalState extends GetxController {
 
   late GoogleMapController mapController;
 
-  Future<UserCredential?> googleAuth() async {
+  Future<GoogleSignInAccount?> googleAuth() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      final GoogleSignInAccount? googleAccount = await GoogleSignIn().signIn();
 
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      return await FirebaseAuth.instance.signInWithCredential(credential);
+      return googleAccount;
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
       return null;
@@ -112,6 +106,10 @@ class GlobalState extends GetxController {
         });
   }
 
+  void login(models.User newUser) {
+    user.value = newUser;
+  }
+
   void changeLocation(LatLng nextPos) {
     latlng = nextPos;
   }
@@ -138,6 +136,5 @@ class GlobalState extends GetxController {
     // if (currentRoute != '/' && currentRoute != '/SplashScreen') {
     //   return;
     // }
-    log('hi');
   }
 }
