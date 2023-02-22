@@ -17,6 +17,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   final _globalStates = Get.find<GlobalState>();
 
   late final TabController _tabController;
+  bool _isPoping = false;
 
   @override
   void initState() {
@@ -46,15 +47,26 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
       initialIndex: 1,
       child: Scaffold(
         key: _scaffoldKey,
-        body: SafeArea(
-          child: TabBarView(
-            controller: _tabController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: const [
-              CollectionScreen(),
-              MainMap(),
-              RankScreen(),
-            ],
+        body: WillPopScope(
+          onWillPop: (() async {
+            if (_index == 1) {
+              GlobalState.navigatorKey.currentState!
+                  .push(MaterialPageRoute(builder: ((context) {
+                return const MainMap();
+              })));
+              return false;
+            }
+            if (!_isPoping) {
+              _isPoping = true;
+              Timer(const Duration(milliseconds: 200), () {
+                _isPoping = false;
+              });
+              showToast('한번 더 뒤로가기를 하면 종료됩니다.');
+              return false;
+            }
+
+            return true;
+          }),
           ),
         ),
         bottomNavigationBar: SizedBox(
