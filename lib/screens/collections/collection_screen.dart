@@ -198,6 +198,7 @@ class CollectionBox extends StatefulWidget {
 }
 
 class _CollectionBoxState extends State<CollectionBox> {
+  CarouselController buttonCarouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -222,177 +223,209 @@ class _CollectionBoxState extends State<CollectionBox> {
             ),
             Container(
               margin: const EdgeInsets.only(
-                left: 30,
-                right: 30,
+                left: 10,
+                right: 10,
                 bottom: 30,
               ),
               child: CarouselSlider.builder(
+                  carouselController: buttonCarouselController,
                   itemCount: 5, //쓰레기 종류 갯수
                   itemBuilder: (context, index, realIndex) {
-                    return Stack(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(
-                                15,
+                    return Container(
+                      margin: const EdgeInsets.only(left: 20, right: 20),
+                      child: Stack(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(
+                                  15,
+                                ),
                               ),
-                            ),
-                            // color: collectionInnerColors.elementAt(index),
-                            gradient: LinearGradient(
-                              begin: FractionalOffset.topLeft,
-                              end: FractionalOffset.bottomRight,
-                              colors: [
-                                collectionOuterTopLeftColors[index],
-                                // Color.fromRGBO(206, 223, 198, 1)
-                                collectionOuterBottomRightColors[index],
-                              ],
-                              stops: [0.1, 1],
+                              gradient: LinearGradient(
+                                begin: FractionalOffset.topLeft,
+                                end: FractionalOffset.bottomRight,
+                                colors: [
+                                  collectionOuterTopLeftColors[index],
+                                  collectionOuterBottomRightColors[index],
+                                ],
+                                stops: const [0.1, 1],
+                              ),
                             ),
                           ),
-                        ),
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(
-                                  bottom: 10,
-                                ),
-                                child: const Text(
-                                  "Plastic",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20,
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    bottom: 10,
                                   ),
-                                ),
-                              ),
-                              Stack(
-                                children: [
-                                  Container(
-                                    height: 230,
-                                    width: 200,
-                                    decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.7),
-                                          spreadRadius: 0,
-                                          blurRadius: 5.0,
-                                          offset: const Offset(0,
-                                              5), // changes position of shadow
-                                        ),
-                                      ],
-                                      color: collectionInnerColors
-                                          .elementAt(index),
-                                      borderRadius: const BorderRadius.all(
-                                        Radius.circular(15),
-                                      ),
+                                  child: const Text(
+                                    "Plastic",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
                                     ),
                                   ),
-                                  Column(
-                                    children: [
-                                      Container(
-                                        child: const Icon(
-                                          Icons.ac_unit_outlined,
-                                          size: 200,
+                                ),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      height: 230,
+                                      width: 200,
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.7),
+                                            spreadRadius: 0,
+                                            blurRadius: 5.0,
+                                            offset: const Offset(0,
+                                                5), // changes position of shadow
+                                          ),
+                                        ],
+                                        color: collectionInnerColors
+                                            .elementAt(index),
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(15),
                                         ),
                                       ),
-                                      Container(
-                                        child: const Text(
-                                          "LV 1   콜라버려려려러",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500),
+                                    ),
+                                    Column(
+                                      children: [
+                                        Container(
+                                          child: const Icon(
+                                            Icons.ac_unit_outlined,
+                                            size: 200,
+                                          ),
                                         ),
-                                      )
+                                        Container(
+                                          child: const Text(
+                                            "LV 1   콜라버려려려러",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    top: 15,
+                                    left: 60,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        flex: 8,
+                                        child: Container(
+                                          width: 150,
+                                          height: 7,
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15)),
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      Flexible(
+                                        flex: 2,
+                                        child: Container(
+                                          alignment: Alignment.centerRight,
+                                          child: Text(
+                                            "$index%",
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                  top: 15,
-                                  left: 60,
                                 ),
-                                child: Row(
-                                  children: [
-                                    Flexible(
-                                      flex: 8,
-                                      child: Container(
-                                        width: 150,
-                                        height: 7,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(15)),
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                    Flexible(
-                                      flex: 2,
-                                      child: Container(
-                                        alignment: Alignment.centerRight,
-                                        child: Text(
-                                          "$index%",
-                                          style: const TextStyle(
-                                            color: Colors.white,
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                    top: 30,
+                                  ),
+                                  // child: TweenAnimationBuilder(
+                                  //   tween: Tween<double>(begin: 0, end: 0.5),
+                                  //   duration: const Duration(milliseconds: 500),
+                                  //   builder: (context, value, child) =>
+                                  //       LinearProgressIndicator(
+                                  //     value: value,
+                                  //     backgroundColor: Colors.grey,
+                                  //   ),
+                                  // ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      for (int i = 0; i < 5; i++)
+                                        if (index == i)
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                              right: 10,
+                                              left: 10,
+                                            ),
+                                            child:
+                                                CollentionBottomColor(index: i),
+                                          )
+                                        else
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                              right: 10,
+                                              left: 10,
+                                            ),
+                                            child: const Icon(
+                                              Icons.circle,
+                                              size: 15,
+                                              color: Colors.white,
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                margin: const EdgeInsets.only(
-                                  top: 30,
-                                ),
-                                // child: TweenAnimationBuilder(
-                                //   tween: Tween<double>(begin: 0, end: 0.5),
-                                //   duration: const Duration(milliseconds: 500),
-                                //   builder: (context, value, child) =>
-                                //       LinearProgressIndicator(
-                                //     value: value,
-                                //     backgroundColor: Colors.grey,
-                                //   ),
-                                // ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (int i = 0; i < 5; i++)
-                                      if (index == i)
-                                        Container(
-                                          margin: const EdgeInsets.only(
-                                            right: 10,
-                                            left: 10,
-                                          ),
-                                          child:
-                                              CollentionBottomColor(index: i),
-                                        )
-                                      else
-                                        Container(
-                                          margin: const EdgeInsets.only(
-                                            right: 10,
-                                            left: 10,
-                                          ),
-                                          child: const Icon(
-                                            Icons.circle,
-                                            size: 15,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: IconButton(
+                              onPressed: () =>
+                                  buttonCarouselController.previousPage(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.linear),
+                              icon: const Icon(
+                                Icons.chevron_left,
+                                color: Color.fromRGBO(255, 255, 255, 0.8),
+                                size: 40,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              onPressed: () =>
+                                  buttonCarouselController.nextPage(
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      curve: Curves.linear),
+                              icon: const Icon(
+                                Icons.chevron_right,
+                                color: Color.fromRGBO(255, 255, 255, 0.8),
+                                size: 40,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   },
                   options: CarouselOptions(
-                    height: 400,
+                    height: 380,
                     viewportFraction: 1,
                   )),
             ),
