@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/styles/color.dart';
 import 'package:garbage_collector/utils/utils.dart';
+// import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -113,6 +116,17 @@ class _MainMap extends State<MainMap> {
             bottom: 130,
             child: GestureDetector(
                 onTap: () async {
+                  final bounds =
+                      await _globalStates.mapController.getVisibleRegion();
+                  final leftTop = bounds.northeast;
+                  final rightBottom = bounds.southwest;
+                  // final distance = Geolocator.distanceBetween(
+                  //     leftTop.latitude,
+                  //     leftTop.longitude,
+                  //     rightBottom.latitude,
+                  //     rightBottom.longitude);
+                  // log('${leftTop.latitude}, ${leftTop.longitude} / ${rightBottom.latitude}, ${rightBottom.longitude}');
+                  // log(distance.toString());
                   //TODO 터치 시 검색
                 },
                 child: Container(
