@@ -55,11 +55,9 @@ class User {
   }
 
   static Future<User> googleLogin(String nickname, String email,
-      String accessToken, String profileUrl) async {
+      String accessToken, String profileImg) async {
     String api = "${ENV.apiEndpoint}/user/login";
 
-    // final response = await http
-    //     .get(Uri.parse(api), headers: {"Authorization": "Bearer $token"});
     final response = await http.post(
       Uri.parse(api),
       headers: {
@@ -69,12 +67,34 @@ class User {
         'nickname': nickname,
         'email': email,
         'accessToken': accessToken,
-        'profileUrl': profileUrl,
+        'profileImg': profileImg,
       }),
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return User.fromJson(json.decode(response.body)['user']);
+      log(response.body);
+      return User.fromJson(json.decode(response.body)['result']);
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
+  static Future<User> auth(String accessToken, String refreshToken) async {
+    String api = "${ENV.apiEndpoint}/user/login";
+
+    final response = await http.post(
+      Uri.parse(api),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: jsonEncode({
+        'accessToken': accessToken,
+        'refreshToken': refreshToken,
+      }),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return User.fromJson(json.decode(response.body)['result']);
     } else {
       throw newHTTPException(response.statusCode, response.body);
     }
