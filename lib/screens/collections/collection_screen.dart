@@ -1,7 +1,16 @@
 import 'dart:math';
+import 'dart:developer';
 
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:garbage_collector/styles/color.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/models/models.dart' as models;
+import 'package:garbage_collector/states/states.dart';
+import 'package:garbage_collector/utils/utils.dart';
+import 'package:garbage_collector/widgets/widgets.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({super.key});
@@ -15,19 +24,120 @@ class _CollectionScreenState extends State<CollectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Column(
-          children: const <Widget>[
-            Flexible(
-              flex: 7,
-              child: MyInfoBox(),
-            ),
-            Flexible(
-              flex: 13,
-              child: CollectionBox(),
-            ),
-          ],
-        ),
+        child: BeforeLogin(),
+        // child: Column(
+        //   children: const <Widget>[
+        //     Flexible(
+        //       flex: 7,
+        //       child: MyInfoBox(),
+        //     ),
+        //     Flexible(
+        //       flex: 13,
+        //       child: CollectionBox(),
+        //     ),
+        //   ],
+        // ),
       ),
+    );
+  }
+}
+
+class BeforeLogin extends StatefulWidget {
+  const BeforeLogin({super.key});
+
+  @override
+  State<BeforeLogin> createState() => _BeforeLoginState();
+}
+
+class _BeforeLoginState extends State<BeforeLogin> {
+  final _globalStates = Get.find<GlobalState>();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text.rich(
+                TextSpan(
+                    text: '재활용 쓰레기통',
+                    style: TextStyle(color: ColorSystem.primary, fontSize: 24),
+                    children: [
+                      TextSpan(
+                        text: '에 버려주세요',
+                        style: TextStyle(color: Colors.white),
+                      )
+                    ]),
+                style: TextStyle(color: Colors.white),
+              ),
+              GestureDetector(
+                onTap: () async {
+                  try {
+                    final googleUser = await _globalStates.googleAuth();
+
+                    if (googleUser == null) {
+                      showToast('구글 로그인 중 오류 발생했습니다.');
+                      return;
+                    }
+                    final GoogleSignInAuthentication googleAuth =
+                        await googleUser.authentication;
+
+                    final credential = GoogleAuthProvider.credential(
+                      accessToken: googleAuth.accessToken,
+                      idToken: googleAuth.idToken,
+                    );
+
+                    final user = await models.User.googleLogin(
+                      googleUser.displayName!,
+                      googleUser.email,
+                      credential.accessToken!,
+                      googleUser.photoUrl!,
+                    );
+
+                    _globalStates.login(user);
+                    setState(() {});
+                  } catch (e, s) {
+                    // log(e.toString(), stackTrace: s);
+                  }
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  width: 200,
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.7),
+                        spreadRadius: 0,
+                        blurRadius: 5.0,
+                        offset:
+                            const Offset(2, 2), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: Image.network(
+                          "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
+                          scale: 20,
+                        ),
+                      ),
+                      const Text(
+                        "Sign in with Google",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )),
     );
   }
 }
@@ -49,7 +159,7 @@ class _MyInfoBoxState extends State<MyInfoBox> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: EdgeInsets.only(bottom: 30),
+              margin: const EdgeInsets.only(bottom: 30),
               child: const Text(
                 "My Info",
                 style: TextStyle(
