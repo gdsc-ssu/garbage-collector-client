@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:garbage_collector/screens/maps/maps.dart';
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:get/get.dart';
+import 'package:garbage_collector/styles/color.dart';
 
 class RankScreen extends StatefulWidget {
   const RankScreen({super.key});
@@ -50,7 +51,7 @@ class _RankScreen extends State<RankScreen> {
               begin: FractionalOffset.topCenter,
               end: FractionalOffset.bottomCenter,
               colors: [
-                Color.fromRGBO(125, 178, 98, 1),
+                ColorSystem.primary,
                 // Color.fromRGBO(206, 223, 198, 1)
                 Colors.white,
               ],
@@ -98,14 +99,9 @@ class _RankScreen extends State<RankScreen> {
   }
 }
 
-class TopThreeRanks extends StatefulWidget {
+class TopThreeRanks extends StatelessWidget {
   const TopThreeRanks({super.key});
 
-  @override
-  State<TopThreeRanks> createState() => _TopThreeRanksState();
-}
-
-class _TopThreeRanksState extends State<TopThreeRanks> {
   @override
   Widget build(BuildContext context) {
     return Container(
