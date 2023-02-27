@@ -31,7 +31,9 @@ dependencies:
   firebase_auth: ^4.2.6
   firebase_core: ^2.5.0
   http: ^0.13.5
-  
+  dio: ^5.0.1
+  shared_preferences: ^2.0.18
+  # geolocator: ^9.0.0
 
 dev_dependencies:
   flutter_test:
