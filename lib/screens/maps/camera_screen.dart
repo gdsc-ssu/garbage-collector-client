@@ -1,12 +1,15 @@
 import 'dart:io';
 import 'dart:developer';
+// import 'package:http/http.dart' as http;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:garbage_collector/env/env.dart';
+import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:garbage_collector/screens/screens.dart';
-import 'package:get/get.dart';
-import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/states/states.dart';
+import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/widgets/widgets.dart';
 
 class CameraScreen extends StatefulWidget {
@@ -16,12 +19,15 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreen extends State<CameraScreen> {
+  final _globalStates = Get.find<GlobalState>();
   CameraController? _cameraController;
   Future<void>? _initCameraControllerFuture;
-  int cameraIndex = 0;
+  final int _cameraIndex = 0;
 
-  bool isCapture = false;
-  File? captureImage;
+  bool _isCapture = false;
+  bool _isProgress = false;
+  XFile? _image;
+  String _category = '';
 
   @override
   void initState() {
@@ -32,7 +38,7 @@ class _CameraScreen extends State<CameraScreen> {
   Future<void> _initCamera() async {
     final cameras = await availableCameras();
     _cameraController = CameraController(
-      cameras[cameraIndex],
+      cameras[_cameraIndex],
       ResolutionPreset.high,
       enableAudio: false,
       imageFormatGroup: ImageFormatGroup.jpeg,
@@ -46,10 +52,9 @@ class _CameraScreen extends State<CameraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: isCapture
+      body: _isCapture
           ? Stack(
               children: [
-                /// 촬영 된 이미지 출력
                 Container(
                   width: double.infinity,
                   height: double.infinity,
@@ -61,52 +66,18 @@ class _CameraScreen extends State<CameraScreen> {
                         Colors.black,
                         BlendMode.dstATop,
                       ),
-                      image: MemoryImage(captureImage!.readAsBytesSync()),
+                      image: Image.file(File(_image!.path)).image,
                     ),
                   ),
                 ),
-                const Center(child: TrashScreen()),
-
+                (_isProgress)
+                    ? const Center(child: CircularProgressIndicator())
+                    : Center(child: TrashScreen(category: _category)),
                 const Positioned(
                   left: 10,
                   top: 20,
                   child: GoingBackButton(),
                 ),
-
-                // Flexible(
-                //   flex: 2,
-                //   fit: FlexFit.tight,
-                //   child: InkWell(
-                //     onTap: () {
-                //       /// 재촬영 선택시 카메라 삭제 및 상태 변경
-                //       captureImage!.delete();
-                //       captureImage = null;
-                //       setState(() {
-                //         isCapture = false;
-                //       });
-                //     },
-                //     child: SizedBox(
-                //       width: double.infinity,
-                //       child: Column(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: const [
-                //           Icon(
-                //             Icons.arrow_back,
-                //             color: Colors.white,
-                //           ),
-                //           SizedBox(height: 16.0),
-                //           Text(
-                //             "다시 찍기",
-                //             style: TextStyle(
-                //                 fontSize: 16.0,
-                //                 color: Colors.white,
-                //                 fontWeight: FontWeight.bold),
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             )
           : Stack(
@@ -137,12 +108,51 @@ class _CameraScreen extends State<CameraScreen> {
                       onTap: () async {
                         try {
                           await _cameraController!.takePicture().then((value) {
-                            captureImage = File(value.path);
+                            _image = value;
                           });
 
-                          /// 화면 상태 변경 및 이미지 저장
                           setState(() {
-                            isCapture = true;
+                            _isCapture = true;
+                            _isProgress = true;
+                          });
+                          if (_image != null) {
+                            Dio dio = Dio();
+
+                            final len = await _image!.length();
+
+                            FormData formData = FormData.fromMap({
+                              "image": await MultipartFile.fromFile(
+                                  _image!.path,
+                                  filename: "image.jpeg"),
+                            });
+
+                            final categoryResult = await dio.get(
+                              '${ENV.imageEndPoint}/garbage',
+                              data: formData,
+                              options: Options(
+                                headers: {
+                                  "Content-Type": 'multipart/form-data',
+                                  "Content-Length": len,
+                                },
+                              ),
+                            );
+                            log(categoryResult.data.toString());
+                            _category = categoryResult.data['predicted_type'];
+
+                            // final result = await http.post(
+                            //     Uri.parse(
+                            //         '${ENV.apiEndpoint}/basket/recommend'),
+                            //     headers: {
+                            //       "authorization": _globalStates.token
+                            //     },
+                            //     body: {
+                            //       "lat": _globalStates.latlng.latitude,
+                            //       "lng": _globalStates.latlng.longitude,
+                            //       "type": _category
+                            //     });
+                          }
+                          setState(() {
+                            _isProgress = false;
                           });
                         } catch (e, s) {
                           log(e.toString(), stackTrace: s);
