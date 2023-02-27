@@ -17,6 +17,7 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreen extends State<SettingScreen> {
   final _globalStates = Get.find<GlobalState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,33 +26,8 @@ class _SettingScreen extends State<SettingScreen> {
         actions: [
           GestureDetector(
             onTap: () async {
-              try {
-                final googleUser = await _globalStates.googleAuth();
-
-                if (googleUser == null) {
-                  showToast('구글 로그인 중 오류 발생했습니다.');
-                  return;
-                }
-                final GoogleSignInAuthentication googleAuth =
-                    await googleUser.authentication;
-
-                final credential = GoogleAuthProvider.credential(
-                  accessToken: googleAuth.accessToken,
-                  idToken: googleAuth.idToken,
-                );
-
-                final user = await models.User.googleLogin(
-                  googleUser.displayName!,
-                  googleUser.email,
-                  credential.accessToken!,
-                  googleUser.photoUrl!,
-                );
-
-                _globalStates.login(user);
-                setState(() {});
-              } catch (e, s) {
-                log(e.toString(), stackTrace: s);
-              }
+              await _globalStates.googleAuth();
+              setState(() {});
             },
             child: Container(
               alignment: Alignment.center,
@@ -65,95 +41,111 @@ class _SettingScreen extends State<SettingScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  margin: const EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(30)),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [Text('닉네임'), Text('설명')],
-                ),
-              ],
-            ),
-            const Text('주로 처리한 쓰레기'),
-            Row(
-              children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  margin: const EdgeInsets.only(right: 10, bottom: 50),
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(30)),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('플라스틱 쓰레기'),
-                    Text('처리횟수 : 100회'),
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  margin: const EdgeInsets.only(right: 10, bottom: 50),
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(30)),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('플라스틱 쓰레기'),
-                    Text('처리횟수 : 100회'),
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                  width: 100,
-                  height: 100,
-                  margin: const EdgeInsets.only(right: 10, bottom: 50),
-                  decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(30)),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('플라스틱 쓰레기'),
-                    Text('처리횟수 : 100회'),
-                  ],
-                ),
-              ],
-            ),
-            Text('개발자에게 문의하기'),
-            GestureDetector(
-              onTap: () async {},
-              child: Text('로그아웃'),
-            ),
-          ],
-        ),
-      ),
+      body: (_globalStates.user.value != null)
+          ? SingleChildScrollView(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 50,
+                        height: 50,
+                        margin: const EdgeInsets.only(right: 10),
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: Image.network(
+                                        _globalStates.user.value!.profileImg!)
+                                    .image)),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(_globalStates.user.value!.nickname),
+                          Text('설명')
+                        ],
+                      ),
+                    ],
+                  ),
+                  const Text('주로 처리한 쓰레기'),
+                  TweenAnimationBuilder(
+                      tween: Tween<double>(begin: 0, end: 0.5),
+                      duration: const Duration(milliseconds: 500),
+                      builder: (context, value, child) =>
+                          LinearProgressIndicator(
+                            value: value,
+                            backgroundColor: Colors.grey,
+                          )),
+                  Row(
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        margin: const EdgeInsets.only(right: 10, bottom: 50),
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(30)),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('플라스틱 쓰레기'),
+                          Text('처리횟수 : ${_globalStates.user.value!.plastic}회'),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        margin: const EdgeInsets.only(right: 10, bottom: 50),
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(30)),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('플라스틱 쓰레기'),
+                          Text('처리횟수 : 100회'),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 100,
+                        margin: const EdgeInsets.only(right: 10, bottom: 50),
+                        decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(30)),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('플라스틱 쓰레기'),
+                          Text('처리횟수 : 100회'),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Text('개발자에게 문의하기'),
+                  GestureDetector(
+                    onTap: () async {},
+                    child: Text('로그아웃'),
+                  ),
+                ],
+              ),
+            )
+          : const CircularProgressIndicator(),
     );
   }
 }
