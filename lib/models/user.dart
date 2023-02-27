@@ -7,31 +7,31 @@ import 'package:garbage_collector/env/env.dart';
 
 class User {
   final int id;
-  final String? profileUrl;
+  final String? profileImg;
   final String nickname;
-  final String? email;
-  final String token;
+  final String email;
   final int general;
   final int plastic;
   final int paper;
   final int can;
-  final int vinyl;
   final int glass;
+  final String? accessToken;
+  final String? refreshToken;
   final DateTime createdAt;
   final DateTime updatedAt;
 
   User(
     this.id,
-    this.profileUrl,
+    this.profileImg,
     this.nickname,
     this.email,
-    this.token,
     this.general,
     this.plastic,
     this.paper,
     this.can,
-    this.vinyl,
     this.glass,
+    this.accessToken,
+    this.refreshToken,
     this.createdAt,
     this.updatedAt,
   );
@@ -39,16 +39,16 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       json['id'] as int,
-      json['profileUrl'] as String,
+      json['profileImg'] as String?,
       json['nickname'] as String,
       json['email'] as String,
-      json['token'] as String,
       json['general'] as int,
       json['plastic'] as int,
       json['paper'] as int,
       json['can'] as int,
-      json['vinyl'] as int,
       json['glass'] as int,
+      json['accessToken'] as String?,
+      json['refreshToken'] as String?,
       DateTime.parse(json['createdAt'] as String),
       DateTime.parse(json['updatedAt'] as String),
     );
