@@ -42,6 +42,7 @@ class _SettingScreen extends State<SettingScreen> {
         ],
       ),
       body: (_globalStates.user.value != null)
+          // ? Text("A")
           ? SingleChildScrollView(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -53,11 +54,13 @@ class _SettingScreen extends State<SettingScreen> {
                         height: 50,
                         margin: const EdgeInsets.only(right: 10),
                         decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                image: Image.network(
-                                        _globalStates.user.value!.profileImg!)
-                                    .image)),
+                          shape: BoxShape.circle,
+                          // image: DecorationImage(
+                          //   image: Image.network(
+                          //           _globalStates.user.value!.profileImg!)
+                          //       .image,
+                          // ),
+                        ),
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
