@@ -2,3 +2,4 @@ library utils;
 
 export 'toast.dart';
 export 'exception.dart';
+export 'character.dart';

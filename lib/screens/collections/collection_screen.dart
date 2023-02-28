@@ -24,19 +24,19 @@ class _CollectionScreenState extends State<CollectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: BeforeLogin(),
-        // child: Column(
-        //   children: const <Widget>[
-        //     Flexible(
-        //       flex: 7,
-        //       child: MyInfoBox(),
-        //     ),
-        //     Flexible(
-        //       flex: 13,
-        //       child: CollectionBox(),
-        //     ),
-        //   ],
-        // ),
+        // child: BeforeLogin(),
+        child: Column(
+          children: const <Widget>[
+            Flexible(
+              flex: 7,
+              child: MyInfoBox(),
+            ),
+            Flexible(
+              flex: 13,
+              child: CollectionBox(),
+            ),
+          ],
+        ),
       ),
     );
   }

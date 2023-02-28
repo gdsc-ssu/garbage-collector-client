@@ -1,12 +1,12 @@
 name: garbage_collector
 description: A new Flutter project.
 
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.18.6 <3.0.0'
+  sdk: ">=2.18.6 <3.0.0"
 
 dependencies:
   flutter:
@@ -45,26 +45,31 @@ flutter:
 
   assets:
     - assets/icons/
+    - assets/images/can.png
+    - assets/images/general.png
+    - assets/images/glass.png
+    - assets/images/milk.png
+    - assets/images/plastic.png
 
 fonts:
-    - family: pretendard
-      fonts:
-        - asset: assets/fonts/Pretendard-Regular.otf
-        - asset: assets/fonts/Pretendard-Thin.otf
-          weight: 100
-        - asset: assets/fonts/Pretendard-ExtraLight.otf
-          weight: 200
-        - asset: assets/fonts/Pretendard-Light.otf
-          weight: 300
-        - asset: assets/fonts/Pretendard-Regular.otf
-          weight: 400
-        - asset: assets/fonts/Pretendard-Medium.otf
-          weight: 500
-        - asset: assets/fonts/Pretendard-SemiBold.otf
-          weight: 600
-        - asset: assets/fonts/Pretendard-Bold.otf
-          weight: 700
-        - asset: assets/fonts/Pretendard-ExtraBold.otf
-          weight: 800
-        - asset: assets/fonts/Pretendard-Black.otf
-          weight: 900
+  - family: pretendard
+    fonts:
+      - asset: assets/fonts/Pretendard-Regular.otf
+      - asset: assets/fonts/Pretendard-Thin.otf
+        weight: 100
+      - asset: assets/fonts/Pretendard-ExtraLight.otf
+        weight: 200
+      - asset: assets/fonts/Pretendard-Light.otf
+        weight: 300
+      - asset: assets/fonts/Pretendard-Regular.otf
+        weight: 400
+      - asset: assets/fonts/Pretendard-Medium.otf
+        weight: 500
+      - asset: assets/fonts/Pretendard-SemiBold.otf
+        weight: 600
+      - asset: assets/fonts/Pretendard-Bold.otf
+        weight: 700
+      - asset: assets/fonts/Pretendard-ExtraBold.otf
+        weight: 800
+      - asset: assets/fonts/Pretendard-Black.otf
+        weight: 900
