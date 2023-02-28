@@ -8,13 +8,13 @@ import 'package:garbage_collector/env/env.dart';
 class User {
   final int id;
   final String? profileImg;
-  final String nickname;
-  final String email;
+  final String? nickname;
+  final String? email;
   final int general;
   final int plastic;
-  final int paper;
   final int can;
   final int glass;
+  final int paper;
   final String? accessToken;
   final String? refreshToken;
   final DateTime createdAt;
@@ -27,9 +27,9 @@ class User {
     this.email,
     this.general,
     this.plastic,
-    this.paper,
     this.can,
     this.glass,
+    this.paper,
     this.accessToken,
     this.refreshToken,
     this.createdAt,
@@ -40,13 +40,13 @@ class User {
     return User(
       json['id'] as int,
       json['profileImg'] as String?,
-      json['nickname'] as String,
+      json['nickname'] as String?,
       json['email'] as String,
       json['general'] as int,
       json['plastic'] as int,
-      json['paper'] as int,
       json['can'] as int,
       json['glass'] as int,
+      json['paper'] as int,
       json['accessToken'] as String?,
       json['refreshToken'] as String?,
       DateTime.parse(json['createdAt'] as String),
