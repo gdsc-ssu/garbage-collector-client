@@ -73,33 +73,8 @@ class _BeforeLoginState extends State<BeforeLogin> {
               ),
               GestureDetector(
                 onTap: () async {
-                  try {
-                    final googleUser = await _globalStates.googleAuth();
-
-                    if (googleUser == null) {
-                      showToast('구글 로그인 중 오류 발생했습니다.');
-                      return;
-                    }
-                    final GoogleSignInAuthentication googleAuth =
-                        await googleUser.authentication;
-
-                    final credential = GoogleAuthProvider.credential(
-                      accessToken: googleAuth.accessToken,
-                      idToken: googleAuth.idToken,
-                    );
-
-                    final user = await models.User.googleLogin(
-                      googleUser.displayName!,
-                      googleUser.email,
-                      credential.accessToken!,
-                      googleUser.photoUrl!,
-                    );
-
-                    _globalStates.login(user);
-                    setState(() {});
-                  } catch (e, s) {
-                    // log(e.toString(), stackTrace: s);
-                  }
+                  await _globalStates.googleAuth();
+                  setState(() {});
                 },
                 child: Container(
                   alignment: Alignment.center,
