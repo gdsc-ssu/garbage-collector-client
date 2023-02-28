@@ -62,7 +62,7 @@ class _SettingScreen extends State<SettingScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(_globalStates.user.value!.nickname),
+                          // Text(_globalStates.user.value!.nickname),
                           Text('설명')
                         ],
                       ),
