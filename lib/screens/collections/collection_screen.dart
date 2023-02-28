@@ -21,23 +21,25 @@ class CollectionScreen extends StatefulWidget {
 }
 
 class _CollectionScreenState extends State<CollectionScreen> {
+  final _globalStates = Get.find<GlobalState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // child: BeforeLogin(),
-        child: Column(
-          children: const <Widget>[
-            Flexible(
-              flex: 7,
-              child: MyInfoBox(),
-            ),
-            Flexible(
-              flex: 13,
-              child: CollectionBox(),
-            ),
-          ],
-        ),
+        child: (_globalStates.user.value == null)
+            ? const BeforeLogin()
+            : Column(
+                children: const <Widget>[
+                  Flexible(
+                    flex: 7,
+                    child: MyInfoBox(),
+                  ),
+                  Flexible(
+                    flex: 13,
+                    child: CollectionBox(),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -56,27 +58,46 @@ class _BeforeLoginState extends State<BeforeLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text.rich(
-                TextSpan(
-                    text: '재활용 쓰레기통',
-                    style: TextStyle(color: ColorSystem.primary, fontSize: 24),
-                    children: [
-                      TextSpan(
-                        text: '에 버려주세요',
-                        style: TextStyle(color: Colors.white),
-                      )
-                    ]),
-                style: TextStyle(color: Colors.white),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text.rich(
+              TextSpan(
+                  text: '로그인',
+                  style: TextStyle(
+                    color: ColorSystem.primary,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: ' 후',
+                      style: TextStyle(color: Colors.black),
+                    )
+                  ]),
+              style: TextStyle(color: Colors.white),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 25),
+              child: const Text(
+                "이용할 수 있습니다.",
+                style: TextStyle(
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              GestureDetector(
-                onTap: () async {
-                  await _globalStates.googleAuth();
-                  setState(() {});
-                },
+            ),
+            GestureDetector(
+              onTap: () async {
+                await _globalStates.googleAuth();
+                setState(() {});
+                if (_globalStates.user.value != null) {
+                  Get.offAll(() => const HomeScreen());
+                }
+              },
+              child: Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(10),
                 child: Container(
                   alignment: Alignment.center,
                   width: 200,
@@ -112,8 +133,10 @@ class _BeforeLoginState extends State<BeforeLogin> {
                   ),
                 ),
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

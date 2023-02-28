@@ -44,7 +44,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/icons/
     - assets/images/can.png
     - assets/images/general.png
     - assets/images/glass.png
