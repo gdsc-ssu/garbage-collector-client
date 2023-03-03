@@ -1,14 +1,24 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/consts/consts.dart';
+import 'package:garbage_collector/models/models.dart';
 import 'package:garbage_collector/styles/styles.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/screens/screens.dart';
-import 'package:garbage_collector/consts/consts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TrashScreen extends StatefulWidget {
   final String category;
+  final String largeCategory;
+  final List<Basket?> baskets;
+
   const TrashScreen({
     required this.category,
+    required this.largeCategory,
+    required this.baskets,
     super.key,
   });
 
@@ -17,7 +27,76 @@ class TrashScreen extends StatefulWidget {
 }
 
 class _TrashScreenState extends State<TrashScreen> {
+  final _globalStates = Get.find<GlobalState>();
   int _index = 0;
+
+  Widget _basketSelector(Basket? basket, int index) {
+    if (basket == null) {
+      return Container(
+        width: Get.width * 0.8,
+        height: 80,
+        padding: const EdgeInsets.all(20),
+        margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: (_index == index) ? ColorSystem.primary : Colors.white,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            Text(
+              '쓰레기통이 없습니다.',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            ),
+            Text(
+              '쓰레기통이 없습니다.',
+              style: TextStyle(
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    double distance = Geolocator.distanceBetween(_globalStates.latlng.latitude,
+        _globalStates.latlng.longitude, basket.lat, basket.lng);
+
+    return Container(
+      width: Get.width * 0.8,
+      height: 80,
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        color: (_index == index) ? ColorSystem.primary : Colors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            basket.basketName,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                basket.detailAddress,
+                style: const TextStyle(
+                  fontSize: 12,
+                ),
+              ),
+              Text('${distance.toInt()} M'),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -25,20 +104,20 @@ class _TrashScreenState extends State<TrashScreen> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          trashTranslate[widget.category] ?? '일반 쓰레기',
+          '${trashTranslate[widget.category] ?? '일반'} 쓰레기',
           style: const TextStyle(color: Colors.white, fontSize: 30),
         ),
-        const Text.rich(
+        Text.rich(
           TextSpan(
-              text: '재활용 쓰레기통',
-              style: TextStyle(color: ColorSystem.primary, fontSize: 24),
-              children: [
+              text: '${widget.largeCategory == 'RECYCLE' ? '재활용' : '일반'} 쓰레기통',
+              style: const TextStyle(color: ColorSystem.primary, fontSize: 24),
+              children: const [
                 TextSpan(
                   text: '에 버려주세요',
                   style: TextStyle(color: Colors.white),
                 )
               ]),
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         const SizedBox(height: 20),
         const Text(
@@ -48,84 +127,31 @@ class _TrashScreenState extends State<TrashScreen> {
         GestureDetector(
           onTap: () {
             setState(() {
-              _index = 1;
+              _index = 0;
             });
           },
-          child: Container(
-            width: Get.width * 0.8,
-            height: 80,
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: (_index == 1) ? ColorSystem.primary : Colors.white,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '몰루',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '상도로',
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
-                    Text('170M'),
-                  ],
-                )
-              ],
-            ),
-          ),
+          child: _basketSelector(widget.baskets[0], 0),
         ),
         GestureDetector(
           onTap: () {
             setState(() {
-              _index = 2;
+              _index = 1;
             });
           },
-          child: Container(
-            width: Get.width * 0.8,
-            height: 80,
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: (_index == 2) ? ColorSystem.primary : Colors.white,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '몰루',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '상도로',
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
-                    Text('170M'),
-                  ],
-                )
-              ],
-            ),
-          ),
+          child: _basketSelector(widget.baskets[1], 1),
         ),
-        if (_index != 0)
+        if (_index != -1)
           GestureDetector(
             onTap: () {
+              final selectedBasket = widget.baskets[_index];
+              if (selectedBasket != null) {
+                _globalStates.addThrowableMarker(selectedBasket);
+                _globalStates.mapController.animateCamera(
+                  CameraUpdate.newLatLng(
+                      LatLng(selectedBasket.lat, selectedBasket.lng)),
+                );
+              }
+
               GlobalState.navigatorKey.currentState!
                   .push(MaterialPageRoute(builder: ((context) {
                 return const MainMap();
@@ -134,6 +160,7 @@ class _TrashScreenState extends State<TrashScreen> {
             child: Container(
               width: Get.width * 0.5,
               height: 40,
+              margin: const EdgeInsets.only(top: 20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
