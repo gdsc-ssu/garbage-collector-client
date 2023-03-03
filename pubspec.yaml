@@ -25,7 +25,6 @@ dependencies:
       ref: 9e46048ad2e1f085c1e8f6c77391fa52025e681f
   path_provider: ^2.0.12
   path: ^1.8.2
-  location: ^4.4.0
   carousel_slider: ^4.2.1
   google_sign_in: ^5.4.4
   firebase_auth: ^4.2.6
@@ -33,7 +32,8 @@ dependencies:
   http: ^0.13.5
   dio: ^5.0.1
   shared_preferences: ^2.0.18
-  # geolocator: ^9.0.0
+  geolocator: ^9.0.0
+  tuple: ^2.0.1
 
 dev_dependencies:
   flutter_test:
