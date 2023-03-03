@@ -88,16 +88,21 @@ class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
 }
 
 class GoingBackButton extends StatelessWidget {
-  const GoingBackButton({super.key});
+  final Function? func;
+  const GoingBackButton({this.func, super.key});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          GlobalState.navigatorKey.currentState!
-              .push(MaterialPageRoute(builder: ((context) {
-            return const MainMap();
-          })));
+          if (func != null) {
+            func!();
+          } else {
+            GlobalState.navigatorKey.currentState!
+                .push(MaterialPageRoute(builder: ((context) {
+              return const MainMap();
+            })));
+          }
         },
         child: Container(
           padding: const EdgeInsets.all(5),
