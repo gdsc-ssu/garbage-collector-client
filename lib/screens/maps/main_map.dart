@@ -5,10 +5,10 @@ import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/styles/color.dart';
 import 'package:garbage_collector/utils/utils.dart';
+import 'package:geolocator/geolocator.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 
 class MainMap extends StatefulWidget {
   const MainMap({super.key});
@@ -43,14 +43,10 @@ class _MainMap extends State<MainMap> {
               child: GestureDetector(
                 onTap: () async {
                   _globalStates.loadMarkers();
-                  final location = await Location.instance.getLocation();
-                  if (location.latitude == null || location.longitude == null) {
-                    showToast('현재 위치를 읽는 데 오류가 발생했습니다.');
-                    return;
-                  }
+                  final location = await Geolocator.getCurrentPosition();
                   await _globalStates.mapController.animateCamera(
                       CameraUpdate.newLatLngZoom(
-                          LatLng(location.latitude!, location.longitude!), 17));
+                          LatLng(location.latitude, location.longitude), 17));
                 },
                 child: Container(
                     height: 40,
