@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/models/models.dart';
 import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/styles/color.dart';
 import 'package:garbage_collector/utils/utils.dart';
+import 'package:garbage_collector/widgets/bottomsheet.dart';
 import 'package:geolocator/geolocator.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -36,6 +38,8 @@ class _MainMap extends State<MainMap> {
             myLocationEnabled: true,
             myLocationButtonEnabled: false,
             markers: _globalStates.markerList,
+            buildingsEnabled: false,
+            mapToolbarEnabled: false,
           ),
           Positioned(
               right: 10,
@@ -144,9 +148,7 @@ class _MainMap extends State<MainMap> {
             top: 10,
             right: 10,
             child: GestureDetector(
-              onTap: () {
-                Get.to(() => const SettingScreen());
-              },
+              onTap: () {},
               child: Container(
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
