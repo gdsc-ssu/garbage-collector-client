@@ -1,20 +1,20 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:async';
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:garbage_collector/widgets/bottomsheet.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/utils/utils.dart';
-import 'package:garbage_collector/env/env.dart';
 import 'package:garbage_collector/models/models.dart' as models;
 import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,10 +22,12 @@ class GlobalState extends GetxController {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   Rxn<models.User> user = Rxn<models.User>();
   RxMap<String, Marker> markers = RxMap<String, Marker>({});
+  RxMap<String, Marker> throwableMarkers = RxMap<String, Marker>({});
   String token = "";
   LatLng latlng = const LatLng(37.53617969250303, 126.89801745825915);
 
-  Set<Marker> get markerList => markers.values.toSet();
+  Set<Marker> get markerList =>
+      markers.values.toSet()..addAll(throwableMarkers.values.toSet());
 
   late GoogleMapController mapController;
 
@@ -62,71 +64,30 @@ class GlobalState extends GetxController {
         markerId: const MarkerId('1234'),
         position: const LatLng(37.4950739, 126.9600609),
         onTap: () {
-          Get.bottomSheet(
-            BottomSheet(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(25.0),
-                ),
-              ),
-              onClosing: () {},
-              enableDrag: false,
-              builder: (context) {
-                return SizedBox(
-                  height: Get.height / 2,
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 100,
-                        height: 100,
-                        color: Colors.blueAccent,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            '숭실대 쓰레기통',
-                            style: TextStyle(
-                                fontSize: 21, fontWeight: FontWeight.w700),
-                          ),
-                          const Text(
-                            '이곳에서 3회 Collection을 했습니다.',
-                            style: TextStyle(fontSize: 15),
-                          ),
-                          const Text(
-                            '현재 위치로부터 200m 위치',
-                            style: TextStyle(
-                              fontSize: 12,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Get.to(() => const ReportScreen());
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: ColorSystem.primary,
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: Row(
-                                children: const [
-                                  Icon(Icons.phone),
-                                  Text('쓰레기통 신고하기'),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const Text(
-                            '쓰레기통이 꽉차있거나 보수가 필요하다면 신고해주세요',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
-          );
+          Get.bottomSheet(ThrowableMarkerBottomSheet(
+              basket: models.Basket(
+                  1, 'hi', 'do', 37.491736, 126.9560694, 0, DateTime.now())));
+        });
+  }
+
+  void addThrowableMarker(models.Basket basket) async {
+    ByteData data = await rootBundle.load('assets/icons/throwable_marker.png');
+    Codec codec =
+        await instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 80);
+    FrameInfo fi = await codec.getNextFrame();
+    final markerImage =
+        (await fi.image.toByteData(format: ImageByteFormat.png))!
+            .buffer
+            .asUint8List();
+
+    throwableMarkers.clear();
+
+    throwableMarkers[basket.id.toString()] = Marker(
+        markerId: MarkerId(basket.id.toString()),
+        icon: BitmapDescriptor.fromBytes(markerImage),
+        position: LatLng(basket.lat, basket.lng),
+        onTap: () {
+          Get.bottomSheet(ThrowableMarkerBottomSheet(basket: basket));
         });
   }
 
@@ -143,9 +104,7 @@ class GlobalState extends GetxController {
     SharedPreferences.getInstance().then((pref) async {
       try {
         final accessToken = pref.getString('accessToken');
-        final refreshToken = pref.getString('refreshToken');
-        final user =
-            await models.User.auth(accessToken ?? '', refreshToken ?? '');
+        final user = await models.User.auth(accessToken ?? '');
 
         login(user);
       } catch (e, s) {
@@ -163,17 +122,16 @@ class GlobalState extends GetxController {
   }
 
   Future<void> load() async {
-    // final result = await auth();
+    final result = await auth();
 
-    // if (result) {
-    await loadMarkers();
-    // }
+    if (result) {
+      await loadMarkers();
+    }
 
     Get.offAll(() => const HomeScreen());
-    final location = await Location.instance.getLocation();
-    if (location.latitude != null && location.longitude != null) {
-      latlng = LatLng(location.latitude!, location.longitude!);
-    }
+
+    final location = await Geolocator.getCurrentPosition();
+    latlng = LatLng(location.latitude, location.longitude);
   }
 
   @override
