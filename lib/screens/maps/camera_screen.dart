@@ -1,6 +1,10 @@
 import 'dart:io';
 import 'dart:developer';
-// import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:garbage_collector/models/models.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +15,8 @@ import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/widgets/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tuple/tuple.dart';
 
 class CameraScreen extends StatefulWidget {
   const CameraScreen({super.key});
@@ -28,11 +34,19 @@ class _CameraScreen extends State<CameraScreen> {
   bool _isProgress = false;
   XFile? _image;
   String _category = '';
+  String _largeCategory = '';
+  List<Basket?> _baskets = [null, null];
 
   @override
   void initState() {
     super.initState();
     _initCamera();
+    _saveLocation();
+  }
+
+  Future<void> _saveLocation() async {
+    final location = await Geolocator.getCurrentPosition();
+    _globalStates.changeLocation(LatLng(location.latitude, location.longitude));
   }
 
   Future<void> _initCamera() async {
@@ -72,12 +86,65 @@ class _CameraScreen extends State<CameraScreen> {
                 ),
                 (_isProgress)
                     ? const Center(child: CircularProgressIndicator())
-                    : Center(child: TrashScreen(category: _category)),
+                    : Center(
+                        child: TrashScreen(
+                        category: _category,
+                        largeCategory: _largeCategory,
+                        baskets: _baskets,
+                      )),
                 const Positioned(
                   left: 10,
                   top: 20,
                   child: GoingBackButton(),
                 ),
+                if (!_isProgress)
+                  Positioned(
+                    right: 10,
+                    top: 10,
+                    child: GestureDetector(
+                        onTap: () async {
+                          final result = await Get.to(() => CategoryScreen(
+                                image: _image!,
+                              )) as Tuple2?;
+                          if (result == null) {
+                            return;
+                          }
+                          _category = result.item1;
+                          _largeCategory = result.item2;
+                          _baskets = await Basket.findBaskets(
+                              _globalStates.token,
+                              _globalStates.latlng.latitude,
+                              _globalStates.latlng.longitude,
+                              _largeCategory);
+
+                          if (_baskets.isEmpty) {
+                            _baskets = [null, null];
+                          }
+                          if (_baskets.length == 1) {
+                            _baskets.add(null);
+                          }
+                          setState(() {});
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.white),
+                          ),
+                          child: Row(
+                            children: const [
+                              Icon(
+                                Icons.refresh_rounded,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                '다시 분류하기',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ),
               ],
             )
           : Stack(
@@ -139,17 +206,28 @@ class _CameraScreen extends State<CameraScreen> {
                             log(categoryResult.data.toString());
                             _category = categoryResult.data['predicted_type'];
 
-                            // final result = await http.post(
-                            //     Uri.parse(
-                            //         '${ENV.apiEndpoint}/basket/recommend'),
-                            //     headers: {
-                            //       "authorization": _globalStates.token
-                            //     },
-                            //     body: {
-                            //       "lat": _globalStates.latlng.latitude,
-                            //       "lng": _globalStates.latlng.longitude,
-                            //       "type": _category
-                            //     });
+                            _largeCategory = 'GENERAL';
+                            if (_category == 'battery' ||
+                                _category == 'glass' ||
+                                _category == 'green glass' ||
+                                _category == 'metal' ||
+                                _category == 'plastic' ||
+                                _category == 'white glass') {
+                              _largeCategory = 'RECYCLE';
+                            }
+
+                            _baskets = await Basket.findBaskets(
+                                _globalStates.token,
+                                _globalStates.latlng.latitude,
+                                _globalStates.latlng.longitude,
+                                _largeCategory);
+
+                            if (_baskets.isEmpty) {
+                              _baskets = [null, null];
+                            }
+                            if (_baskets.length == 1) {
+                              _baskets.add(null);
+                            }
                           }
                           setState(() {
                             _isProgress = false;
