@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/models/models.dart';
 import 'package:garbage_collector/screens/maps/maps.dart';
 import 'package:garbage_collector/styles/styles.dart';
+import 'package:garbage_collector/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:garbage_collector/styles/color.dart';
 
@@ -14,37 +16,6 @@ class _RankScreen extends State<RankScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(backgroundColor: Colors.blueAccent, actions: [
-      //   GestureDetector(
-      //     onTap: () {
-      //       Get.snackbar(
-      //         '새로운 쓰레기 획득!',
-      //         '도감에 새로운 쓰레기가 등록되었어요!\n확인해볼까요?',
-      //         icon: const Icon(
-      //           Icons.check_circle_sharp,
-      //           size: 30,
-      //           color: Colors.white,
-      //         ),
-      //         onTap: (snackbar) {
-      //           Get.to(() => const SettingScreen());
-      //         },
-      //         overlayColor: ColorSystem.primary,
-      //         duration: const Duration(seconds: 3),
-      //         mainButton: TextButton(
-      //           onPressed: () {},
-      //           child: const Text(
-      //             '확인하기',
-      //             style: TextStyle(color: Colors.white),
-      //           ),
-      //         ),
-      //         colorText: Colors.white,
-      //         backgroundColor: ColorSystem.primary.withOpacity(0.8),
-      //         barBlur: 0.5,
-      //       );
-      //     },
-      //     child: const Icon(Icons.star, size: 50),
-      //   ),
-      // ]),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -52,7 +23,6 @@ class _RankScreen extends State<RankScreen> {
               end: FractionalOffset.bottomCenter,
               colors: [
                 ColorSystem.primary,
-                // Color.fromRGBO(206, 223, 198, 1)
                 Colors.white,
               ],
               stops: [
@@ -62,10 +32,7 @@ class _RankScreen extends State<RankScreen> {
         ),
         child: Column(
           children: [
-            const Flexible(
-              flex: 4,
-              child: TopThreeRanks(),
-            ),
+            const TopThreeRanks(),
             Flexible(
               flex: 6,
               child: ClipRRect(
@@ -75,24 +42,26 @@ class _RankScreen extends State<RankScreen> {
                 child: Container(
                   decoration: const BoxDecoration(
                     color: Colors.white,
-                    // borderRadius: BorderRadius.only(
-                    //   topLeft: Radius.circular(50),
-                    //   topRight: Radius.circular(50),
-                    // ),
                   ),
                   child: const RankListView(),
                 ),
-
-                // decoration: BoxDecoration(
-                //   color: Colors.white,
-                //   // borderRadius: BorderRadius.only(
-                //   //   topLeft: Radius.circular(50),
-                //   //   topRight: Radius.circular(50),
-                //   // ),
-                // ),
               ),
             ),
           ],
+        ),
+      ),
+      floatingActionButton: GestureDetector(
+        onTap: () {
+          // Get.bottomSheet(MarkerBottomSheet(
+          //     basket: Basket(
+          //         1, 'hi', 'do', 37.491736, 126.9560694, 0, DateTime.now())));
+          Get.bottomSheet(ThrowableMarkerBottomSheet(
+              basket: Basket(
+                  1, 'hi', 'do', 37.491736, 126.9560694, 0, DateTime.now())));
+        },
+        child: Container(
+          color: Colors.white,
+          child: Icon(Icons.ac_unit_rounded),
         ),
       ),
     );
@@ -107,196 +76,190 @@ class TopThreeRanks extends StatelessWidget {
     return Container(
       child: Center(
         child: Column(children: [
-          Flexible(
-            flex: 2,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: const Color.fromRGBO(252, 208, 19, 1),
-              ),
-              child: const Text(
-                "Weekly best!",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
+          Container(
+            height: 50,
+            margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+            padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: const Color.fromRGBO(252, 208, 19, 1),
+            ),
+            child: const Text(
+              "Weekly best!",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 21,
+                  fontWeight: FontWeight.bold),
             ),
           ),
-          Flexible(
-            flex: 8,
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Icon(
-                          Icons.account_circle_rounded,
-                          color: Color.fromRGBO(255, 255, 255, 0.7),
-                          size: 80,
+          Container(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.fromLTRB(15, 20, 15, 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(
+                        Icons.account_circle_rounded,
+                        color: Color.fromRGBO(255, 255, 255, 0.7),
+                        size: 80,
+                      ),
+                      const Text(
+                        "최상원",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
                         ),
-                        const Text(
-                          "최상원",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                      ),
+                      const Text(
+                        "200",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(192, 192, 192, 1),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
                           ),
-                        ),
-                        const Text(
-                          "200",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Container(
-                          width: 80,
-                          height: 95,
-                          decoration: BoxDecoration(
-                            color: const Color.fromRGBO(192, 192, 192, 1),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.7),
+                              spreadRadius: 0,
+                              blurRadius: 5.0,
+                              offset: const Offset(5, 0),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                spreadRadius: 0,
-                                blurRadius: 5.0,
-                                offset: const Offset(
-                                    5, 0), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "2nd",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ],
+                        ),
+                        child: const Center(
+                          child: Text(
+                            "2nd",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Icon(
-                          Icons.account_circle_rounded,
-                          color: Color.fromRGBO(255, 255, 255, 0.7),
-                          size: 80,
+                ),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(
+                        Icons.account_circle_rounded,
+                        color: Color.fromRGBO(255, 255, 255, 0.7),
+                        size: 80,
+                      ),
+                      const Text(
+                        "최상원",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
                         ),
-                        const Text(
-                          "최상원",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                      ),
+                      const Text(
+                        "200",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Container(
+                        width: 80,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(255, 199, 0, 1),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
                           ),
-                        ),
-                        const Text(
-                          "200",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Container(
-                          width: 80,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: const Color.fromRGBO(255, 199, 0, 1),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.7),
+                              spreadRadius: 0,
+                              blurRadius: 5.0,
+                              offset: const Offset(5, 0),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                spreadRadius: 0,
-                                blurRadius: 5.0,
-                                offset: const Offset(5, 0),
-                              ),
-                            ],
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "1st",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ],
+                        ),
+                        child: const Center(
+                          child: Text(
+                            "1st",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        const Icon(
-                          Icons.account_circle_rounded,
-                          color: Color.fromRGBO(255, 255, 255, 0.7),
-                          size: 80,
+                ),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(15, 40, 15, 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      const Icon(
+                        Icons.account_circle_rounded,
+                        color: Color.fromRGBO(255, 255, 255, 0.7),
+                        size: 80,
+                      ),
+                      const Text(
+                        "최상원",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
                         ),
-                        const Text(
-                          "최상원",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
+                      ),
+                      const Text(
+                        "200",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Container(
+                        width: 80,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: const Color.fromRGBO(240, 151, 101, 1),
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
                           ),
-                        ),
-                        const Text(
-                          "200",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Container(
-                          width: 80,
-                          height: 70,
-                          decoration: BoxDecoration(
-                            color: const Color.fromRGBO(240, 151, 101, 1),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.7),
+                              spreadRadius: 0,
+                              blurRadius: 5.0,
+                              offset: const Offset(5, 0),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.7),
-                                spreadRadius: 0,
-                                blurRadius: 5.0,
-                                offset: const Offset(5, 0),
-                              ),
-                            ],
-                          ),
-                          child: const Center(
-                            child: Text(
-                              "3rd",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ],
+                        ),
+                        child: const Center(
+                          child: Text(
+                            "3rd",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ]),
@@ -321,9 +284,8 @@ class _RankListViewState extends State<RankListView> {
       ),
       child: ListView.builder(
         itemCount: 100,
-        physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
         itemBuilder: (context, index) {
+          if (index < 2) return const SizedBox.shrink();
           return Container(
             decoration: const BoxDecoration(
                 border: Border(
@@ -335,11 +297,10 @@ class _RankListViewState extends State<RankListView> {
               child: Row(
                 children: [
                   Container(
-                    // margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                     alignment: Alignment.centerRight,
                     width: 70,
                     child: Text(
-                      '${index + 4}',
+                      index.toString(),
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -367,7 +328,7 @@ class _RankListViewState extends State<RankListView> {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 60, 0),
+                    margin: const EdgeInsets.fromLTRB(0, 0, 50, 0),
                     child: const Text(
                       '200',
                       style: TextStyle(
