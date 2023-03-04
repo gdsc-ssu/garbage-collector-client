@@ -24,7 +24,7 @@ class GlobalState extends GetxController {
   RxMap<String, Marker> markers = RxMap<String, Marker>({});
   RxMap<String, Marker> throwableMarkers = RxMap<String, Marker>({});
   String token = "";
-  LatLng latlng = const LatLng(37.53617969250303, 126.89801745825915);
+  late LatLng latlng;
 
   Set<Marker> get markerList =>
       markers.values.toSet()..addAll(throwableMarkers.values.toSet());
@@ -132,6 +132,9 @@ class GlobalState extends GetxController {
 
     final location = await Geolocator.getCurrentPosition();
     latlng = LatLng(location.latitude, location.longitude);
+    await loadMarkers();
+
+    Get.offAll(() => const HomeScreen());
   }
 
   @override
