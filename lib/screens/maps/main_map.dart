@@ -1,14 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:garbage_collector/models/models.dart';
 import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/styles/color.dart';
-import 'package:garbage_collector/utils/utils.dart';
-import 'package:garbage_collector/widgets/bottomsheet.dart';
 import 'package:geolocator/geolocator.dart';
-// import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
