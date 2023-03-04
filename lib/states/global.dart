@@ -128,8 +128,7 @@ class GlobalState extends GetxController {
     await loadMarkers();
     // }
 
-    Get.offAll(() => const HomeScreen());
-
+    // }
     final location = await Geolocator.getCurrentPosition();
     latlng = LatLng(location.latitude, location.longitude);
     await loadMarkers();
