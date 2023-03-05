@@ -122,11 +122,11 @@ class GlobalState extends GetxController {
   }
 
   Future<void> load() async {
-    final result = await auth();
+    // final result = await auth();
 
-    if (result) {
-      await loadMarkers();
-    }
+    // if (result) {
+    await loadMarkers();
+    // }
 
     Get.offAll(() => const HomeScreen());
 
