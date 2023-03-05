@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:http/http.dart' as http;
 import 'package:garbage_collector/env/env.dart';
 import 'package:garbage_collector/utils/utils.dart';
@@ -52,6 +53,28 @@ class Basket {
       return baskets
           .map((basket) => Basket.fromJson(basket as Map<String, dynamic>))
           .toList();
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
+  static Future<void> reportBaskets(String reportType, int id) async {
+    String api = "${ENV.apiEndpoint}/basket/report";
+
+    final response = await http.post(
+      Uri.parse(api),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+      },
+      body: jsonEncode(
+        {
+          "reportType": reportType,
+          "basketId": id,
+        },
+      ),
+    );
+    if (response.statusCode == 200) {
+      return;
     } else {
       throw newHTTPException(response.statusCode, response.body);
     }

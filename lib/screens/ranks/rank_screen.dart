@@ -55,9 +55,9 @@ class _RankScreen extends State<RankScreen> {
           // Get.bottomSheet(MarkerBottomSheet(
           //     basket: Basket(
           //         1, 'hi', 'do', 37.491736, 126.9560694, 0, DateTime.now())));
-          Get.bottomSheet(ThrowableMarkerBottomSheet(
+          Get.bottomSheet(MarkerBottomSheet(
               basket: Basket(
-                  1, 'hi', 'do', 37.491736, 126.9560694, 0, DateTime.now())));
+                  513, 'hi', 'do', 37.491736, 126.9560694, 0, DateTime.now())));
         },
         child: Container(
           color: Colors.white,

@@ -5,15 +5,23 @@ import 'package:garbage_collector/models/basket.dart';
 import 'package:garbage_collector/states/global.dart';
 
 class ReportScreen extends StatefulWidget {
-  const ReportScreen({super.key});
+  final int basketId;
+  const ReportScreen({required this.basketId, super.key});
 
   @override
   State<ReportScreen> createState() => _ReportScreenState();
 }
 
+const List<String> reportTypes = [
+  "EMPTY",
+  "REPAIR",
+  "INSPECTION",
+];
+
 class _ReportScreenState extends State<ReportScreen> {
   final _globalStates = Get.find<GlobalState>();
-  int _index = 0;
+  late int basketId = widget.basketId;
+  int _index = -1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,8 +62,41 @@ class _ReportScreenState extends State<ReportScreen> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
+                      _index = 0;
+                      Basket.reportBaskets(reportTypes[_index], basketId);
+                    });
+                  },
+                  child: Container(
+                    width: Get.width * 0.7,
+                    height: 60,
+                    decoration: BoxDecoration(
+                        color:
+                            (_index == 0) ? ColorSystem.primary : Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(0, 3),
+                          ),
+                        ]),
+                    alignment: Alignment.center,
+                    child: Text(
+                      '쓰레기통의 보수가 필요해요',
+                      style: TextStyle(
+                        color: (_index == 0) ? Colors.white : Colors.black,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
                       _index = 1;
-                      Basket.reportBaskets(_globalStates.token, "EMPTY", 122);
+                      Basket.reportBaskets(reportTypes[_index], basketId);
                     });
                   },
                   child: Container(
@@ -75,7 +116,7 @@ class _ReportScreenState extends State<ReportScreen> {
                         ]),
                     alignment: Alignment.center,
                     child: Text(
-                      '쓰레기통의 보수가 필요해요',
+                      '내용물을 비워야 해요',
                       style: TextStyle(
                         color: (_index == 1) ? Colors.white : Colors.black,
                         fontSize: 18,
@@ -88,6 +129,7 @@ class _ReportScreenState extends State<ReportScreen> {
                   onTap: () {
                     setState(() {
                       _index = 2;
+                      Basket.reportBaskets(reportTypes[_index], basketId);
                     });
                   },
                   child: Container(
@@ -107,41 +149,9 @@ class _ReportScreenState extends State<ReportScreen> {
                         ]),
                     alignment: Alignment.center,
                     child: Text(
-                      '내용물을 비워야 해요',
-                      style: TextStyle(
-                        color: (_index == 2) ? Colors.white : Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _index = 3;
-                    });
-                  },
-                  child: Container(
-                    width: Get.width * 0.7,
-                    height: 60,
-                    decoration: BoxDecoration(
-                        color:
-                            (_index == 3) ? ColorSystem.primary : Colors.white,
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 5,
-                            blurRadius: 7,
-                            offset: const Offset(0, 3),
-                          ),
-                        ]),
-                    alignment: Alignment.center,
-                    child: Text(
                       '관리자의 점검이 필요해요',
                       style: TextStyle(
-                        color: (_index == 3) ? Colors.white : Colors.black,
+                        color: (_index == 2) ? Colors.white : Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),

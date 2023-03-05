@@ -23,7 +23,11 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
     _basket = widget.basket;
     Geolocator.getCurrentPosition().then((location) {
       distance = Geolocator.distanceBetween(
-          location.latitude, location.longitude, _basket.lat, _basket.lng);
+        location.latitude,
+        location.longitude,
+        _basket.lat,
+        _basket.lng,
+      );
       setState(() {});
     });
   }
@@ -79,7 +83,7 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => const ReportScreen());
+                      Get.to(() => ReportScreen(basketId: _basket.id));
                     },
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
