@@ -194,6 +194,10 @@ class _ThrowableMarkerBottomSheetState
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
+                      if (distance > 80) {
+                        showToast('너무 멀리서 시도중입니다. 가까이에서 시도해주세요.');
+                        return;
+                      }
                       Get.snackbar(
                         '플라스틱 아이템 카드를 획득했어요!',
                         '한번 확인해볼까요?',
