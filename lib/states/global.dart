@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
-import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
+import 'package:garbage_collector/env/env.dart';
 import 'package:garbage_collector/widgets/bottomsheet.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -12,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:garbage_collector/utils/utils.dart';
 import 'package:garbage_collector/models/models.dart' as models;
 import 'package:garbage_collector/screens/screens.dart';
-import 'package:garbage_collector/styles/styles.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -23,6 +21,7 @@ class GlobalState extends GetxController {
   Rxn<models.User> user = Rxn<models.User>();
   RxMap<String, Marker> markers = RxMap<String, Marker>({});
   RxMap<String, Marker> throwableMarkers = RxMap<String, Marker>({});
+  RxList<LatLng> polyline = RxList<LatLng>([]);
   String token = "";
   late LatLng latlng;
 
@@ -59,29 +58,29 @@ class GlobalState extends GetxController {
     }
   }
 
-  Future<void> loadMarkers() async {
-    markers['1234'] = Marker(
-        markerId: const MarkerId('1234'),
-        position: const LatLng(37.4950739, 126.9600609),
-        onTap: () {
-          Get.bottomSheet(ThrowableMarkerBottomSheet(
-              basket: models.Basket(
-                  1, 'hi', 'do', 37.491736, 126.9560694, 0, DateTime.now())));
-        });
+  Future<void> loadMarkers(
+      double lat1, double lng1, double lat2, double lng2) async {
+    final markerImage = await markerImageTransform(false);
+    markers.clear();
+
+    List<models.Basket> baskets =
+        await models.Basket.rangeBaskets(lat1, lng1, lat2, lng2);
+
+    for (var basket in baskets) {
+      markers[basket.id.toString()] = Marker(
+          markerId: MarkerId(basket.id.toString()),
+          icon: BitmapDescriptor.fromBytes(markerImage),
+          position: LatLng(basket.lat, basket.lng),
+          onTap: () {
+            Get.bottomSheet(MarkerBottomSheet(basket: basket));
+          });
+    }
   }
 
   void addThrowableMarker(models.Basket basket) async {
-    ByteData data = await rootBundle.load('assets/icons/throwable_marker.png');
-    Codec codec =
-        await instantiateImageCodec(data.buffer.asUint8List(), targetWidth: 80);
-    FrameInfo fi = await codec.getNextFrame();
-    final markerImage =
-        (await fi.image.toByteData(format: ImageByteFormat.png))!
-            .buffer
-            .asUint8List();
+    final markerImage = await markerImageTransform(true);
 
     throwableMarkers.clear();
-
     throwableMarkers[basket.id.toString()] = Marker(
         markerId: MarkerId(basket.id.toString()),
         icon: BitmapDescriptor.fromBytes(markerImage),
@@ -108,7 +107,9 @@ class GlobalState extends GetxController {
 
         login(user);
       } catch (e, s) {
-        log(e.toString(), stackTrace: s);
+        if (e is! UnauthorisedException) {
+          log(e.toString(), stackTrace: s);
+        }
       }
     });
     if (user.value == null) {
@@ -122,23 +123,19 @@ class GlobalState extends GetxController {
   }
 
   Future<void> load() async {
-    // final result = await auth();
+    await auth();
 
-    // if (result) {
-    await loadMarkers();
-    // }
+    await Geolocator.getCurrentPosition().then((location) {
+      latlng = LatLng(location.latitude, location.longitude);
 
-    // }
-    final location = await Geolocator.getCurrentPosition();
-    latlng = LatLng(location.latitude, location.longitude);
-    await loadMarkers();
-
-    Get.offAll(() => const HomeScreen());
+      Get.offAll(() => const HomeScreen());
+    });
   }
 
   @override
   void onInit() async {
     super.onInit();
+
     await load();
     // final currentRoute = Get.currentRoute;
 
