@@ -35,12 +35,10 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
     if (index == _index) return;
 
     if (_index == 1) {
-      _globalStates.changeLocation(
-        await _globalStates.mapController.getLatLng(ScreenCoordinate(
-          x: Get.width ~/ 2,
-          y: (Get.height - 140) ~/ 2,
-        )),
-      );
+      final bounds = await _globalStates.mapController.getVisibleRegion();
+      _globalStates.changeLocation(LatLng(
+          (bounds.northeast.latitude + bounds.southwest.latitude) / 2,
+          (bounds.northeast.longitude + bounds.southwest.longitude) / 2));
     }
 
     setState(() {
