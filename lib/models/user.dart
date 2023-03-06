@@ -96,4 +96,25 @@ class User {
       throw newHTTPException(response.statusCode, response.body);
     }
   }
+
+  static Future<List<User>> totalRank(String accessToken) async {
+    String api = "${ENV.apiEndpoint}/rank/total";
+
+    final response = await http.get(
+      Uri.parse(api),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "authorization": accessToken
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> users = json.decode(response.body)['result'];
+      return users
+          .map((user) => User.fromJson(user as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
 }
