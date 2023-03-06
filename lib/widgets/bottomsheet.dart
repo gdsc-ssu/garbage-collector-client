@@ -68,11 +68,6 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                         fontSize: 21, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 10),
-                  Text(
-                    '이곳에서 ${_basket.userTrash}회 Collection을 했습니다.',
-                    style: const TextStyle(fontSize: 12),
-                  ),
-                  const SizedBox(height: 10),
                   Row(
                     children: [
                       const Icon(Icons.location_on),
@@ -183,11 +178,6 @@ class _ThrowableMarkerBottomSheetState
                     _basket.basketName,
                     style: const TextStyle(
                         fontSize: 21, fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '이곳에서 ${_basket.userTrash}회 Collection을 했습니다.',
-                    style: const TextStyle(fontSize: 12),
                   ),
                   const SizedBox(height: 10),
                   Row(
