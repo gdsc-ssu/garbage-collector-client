@@ -44,11 +44,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/can.png
-    - assets/images/general.png
-    - assets/images/glass.png
-    - assets/images/milk.png
-    - assets/images/plastic.png
+    - assets/images/
 
 fonts:
   - family: pretendard
