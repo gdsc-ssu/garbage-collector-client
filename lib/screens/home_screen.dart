@@ -88,7 +88,6 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
                     }));
                   }),
                 ),
-                // MainMap(),
                 const RankScreen(),
               ],
             ),
@@ -96,7 +95,16 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
         ),
         bottomNavigationBar: Container(
           height: 60,
-          decoration: const BoxDecoration(color: Colors.white, border: null),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                blurRadius: 1,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
           child: TabBar(
             indicator: const BoxDecoration(),
             indicatorColor: null,
@@ -106,21 +114,21 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
                 icon: Icon(
                   Icons.list_alt,
                   color: (_index == 0) ? ColorSystem.primary : Colors.grey,
-                  size: 30,
+                  size: 36,
                 ),
               ),
               Tab(
                 icon: Icon(
                   Icons.home,
                   color: (_index == 1) ? ColorSystem.primary : Colors.grey,
-                  size: 30,
+                  size: 36,
                 ),
               ),
               Tab(
                 icon: Icon(
                   Icons.wine_bar,
                   color: (_index == 2) ? ColorSystem.primary : Colors.grey,
-                  size: 30,
+                  size: 36,
                 ),
               ),
             ],
