@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 Future<void> showToast(String message,
     {Toast toastLength = Toast.LENGTH_SHORT}) async {
+  Fluttertoast.cancel();
   await Fluttertoast.showToast(
       msg: message,
       toastLength: toastLength,
