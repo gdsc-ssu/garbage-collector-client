@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:get/get.dart';
 import 'package:garbage_collector/models/basket.dart';
-import 'package:garbage_collector/states/global.dart';
 
 class ReportScreen extends StatefulWidget {
   final int basketId;
@@ -19,7 +19,6 @@ const List<String> reportTypes = [
 ];
 
 class _ReportScreenState extends State<ReportScreen> {
-  final _globalStates = Get.find<GlobalState>();
   late int basketId = widget.basketId;
   int _index = -1;
   @override
@@ -64,6 +63,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     setState(() {
                       _index = 0;
                       Basket.reportBaskets(reportTypes[_index], basketId);
+                      Get.to(const ReportConfirmScreen());
                     });
                   },
                   child: Container(
@@ -154,6 +154,104 @@ class _ReportScreenState extends State<ReportScreen> {
                         color: (_index == 2) ? Colors.white : Colors.black,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ReportConfirmScreen extends StatefulWidget {
+  const ReportConfirmScreen({super.key});
+
+  @override
+  State<ReportConfirmScreen> createState() => _ReportConfirmScreenState();
+}
+
+class _ReportConfirmScreenState extends State<ReportConfirmScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      backgroundColor: Colors.white,
+      body: Container(
+        decoration: const BoxDecoration(
+          color: Colors.black,
+          image: DecorationImage(
+            opacity: 0.7,
+            fit: BoxFit.fill,
+            image: AssetImage('assets/images/backgroundTrashBin.png'), // 배경 이미지
+          ),
+        ),
+        child: Center(
+          child: SizedBox(
+            height: Get.height * 0.5,
+            child: Column(
+              children: [
+                const Text.rich(
+                  TextSpan(
+                      text: '신고 접수',
+                      style: TextStyle(
+                        color: ColorSystem.primary,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: '가 완료되었어요',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        )
+                      ]),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                const Text(
+                  "환경을 지키기 위해 소중한 시간을 내어주셔서 감사해요",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 300),
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        Get.offAll(() => const HomeScreen());
+                      });
+                    },
+                    child: Container(
+                      width: Get.width * 0.7,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: ColorSystem.primary,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "확인",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
                     ),
                   ),
