@@ -1,10 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/models/models.dart';
-import 'package:garbage_collector/screens/maps/maps.dart';
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:garbage_collector/styles/color.dart';
+import 'package:garbage_collector/states/states.dart';
+import 'package:tuple/tuple.dart';
 
 class RankScreen extends StatefulWidget {
   const RankScreen({super.key});
@@ -13,6 +16,37 @@ class RankScreen extends StatefulWidget {
 }
 
 class _RankScreen extends State<RankScreen> {
+  final _globalStates = Get.find<GlobalState>();
+  List<Ranker> _rankers = [
+    Ranker(-1, "익명", "", 0),
+    Ranker(-1, "익명", "", 0),
+    Ranker(-1, "익명", "", 0),
+    Ranker(-1, "익명", "", 0),
+    Ranker(-1, "익명", "", 0)
+  ];
+  final List<Ranker> _top3 = [
+    Ranker(-1, "익명", "", 0),
+    Ranker(-1, "익명", "", 0),
+    Ranker(-1, "익명", "", 0)
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    Ranker.totalRank().then((rankers) {
+      _rankers = rankers;
+
+      for (int i = 0; i < 3 && i < rankers.length; i++) {
+        _top3[i] = rankers[i];
+      }
+      _rankers.clear();
+      for (int i = 0; i < 100; i++) {
+        _rankers.add(Ranker(-1, "익명", "", 0));
+      }
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +66,7 @@ class _RankScreen extends State<RankScreen> {
         ),
         child: Column(
           children: [
-            const TopThreeRanks(),
+            TopThreeRanks(_top3),
             Flexible(
               flex: 6,
               child: ClipRRect(
@@ -40,16 +74,15 @@ class _RankScreen extends State<RankScreen> {
                     topLeft: Radius.circular(50),
                     topRight: Radius.circular(50)),
                 child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: const RankListView(),
+                  color: Colors.white,
+                  child: RankListView(rankers: _rankers),
                 ),
               ),
             ),
           ],
         ),
       ),
+<<<<<<< HEAD
       floatingActionButton: GestureDetector(
         onTap: () {
           // Get.bottomSheet(MarkerBottomSheet(
@@ -64,218 +97,220 @@ class _RankScreen extends State<RankScreen> {
           child: Icon(Icons.ac_unit_rounded),
         ),
       ),
+=======
+>>>>>>> 279f2e6 (refactor: first rank screen refactoring)
     );
   }
 }
 
 class TopThreeRanks extends StatelessWidget {
-  const TopThreeRanks({super.key});
+  final List<Ranker> top3;
+
+  const TopThreeRanks(this.top3, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Column(children: [
-          Container(
-            height: 50,
-            margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-            padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: const Color.fromRGBO(252, 208, 19, 1),
-            ),
-            child: const Text(
-              "Weekly best!",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 21,
-                  fontWeight: FontWeight.bold),
-            ),
+    return Center(
+      child: Column(children: [
+        Container(
+          height: 50,
+          margin: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+          padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.amber,
           ),
-          Container(
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  margin: const EdgeInsets.fromLTRB(15, 20, 15, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Icon(
-                        Icons.account_circle_rounded,
-                        color: Color.fromRGBO(255, 255, 255, 0.7),
-                        size: 80,
-                      ),
-                      const Text(
-                        "최상원",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Text(
-                        "200",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: const Color.fromRGBO(192, 192, 192, 1),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.7),
-                              spreadRadius: 0,
-                              blurRadius: 5.0,
-                              offset: const Offset(5, 0),
-                            ),
-                          ],
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "2nd",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Icon(
-                        Icons.account_circle_rounded,
-                        color: Color.fromRGBO(255, 255, 255, 0.7),
-                        size: 80,
-                      ),
-                      const Text(
-                        "최상원",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Text(
-                        "200",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Container(
-                        width: 80,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: const Color.fromRGBO(255, 199, 0, 1),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.7),
-                              spreadRadius: 0,
-                              blurRadius: 5.0,
-                              offset: const Offset(5, 0),
-                            ),
-                          ],
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "1st",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(15, 40, 15, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      const Icon(
-                        Icons.account_circle_rounded,
-                        color: Color.fromRGBO(255, 255, 255, 0.7),
-                        size: 80,
-                      ),
-                      const Text(
-                        "최상원",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const Text(
-                        "200",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Container(
-                        width: 80,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: const Color.fromRGBO(240, 151, 101, 1),
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.7),
-                              spreadRadius: 0,
-                              blurRadius: 5.0,
-                              offset: const Offset(5, 0),
-                            ),
-                          ],
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "3rd",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          child: const Text(
+            "Weekly best!",
+            style: TextStyle(
+                color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
           ),
-        ]),
-      ),
+        ),
+        Container(
+          alignment: Alignment.bottomCenter,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    (top3[1].profileImg == "")
+                        ? const Icon(
+                            Icons.account_circle_rounded,
+                            color: Color.fromRGBO(255, 255, 255, 0.7),
+                            size: 80,
+                          )
+                        : CircularProfileImage(imgUrl: top3[1].profileImg),
+                    Text(
+                      top3[1].nickname,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      top3[1].totalScore.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(192, 192, 192, 1),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.7),
+                            spreadRadius: 0,
+                            blurRadius: 5.0,
+                            offset: const Offset(5, 0),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "2nd",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    (top3[0].profileImg == "")
+                        ? const Icon(
+                            Icons.account_circle_rounded,
+                            color: Color.fromRGBO(255, 255, 255, 0.7),
+                            size: 80,
+                          )
+                        : CircularProfileImage(imgUrl: top3[0].profileImg),
+                    Text(
+                      top3[0].nickname,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      top3[0].totalScore.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Container(
+                      width: 80,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.7),
+                            spreadRadius: 0,
+                            blurRadius: 5.0,
+                            offset: const Offset(5, 0),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "1st",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    (top3[2].profileImg == "")
+                        ? const Icon(
+                            Icons.account_circle_rounded,
+                            color: Color.fromRGBO(255, 255, 255, 0.7),
+                            size: 80,
+                          )
+                        : CircularProfileImage(imgUrl: top3[2].profileImg),
+                    Text(
+                      top3[2].nickname,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      top3[2].totalScore.toString(),
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    Container(
+                      width: 80,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        color: const Color.fromRGBO(240, 151, 101, 1),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.7),
+                            spreadRadius: 0,
+                            blurRadius: 5.0,
+                            offset: const Offset(5, 0),
+                          ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "3rd",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 }
 
-class RankListView extends StatefulWidget {
-  const RankListView({super.key});
-
-  @override
-  State<RankListView> createState() => _RankListViewState();
-}
-
-class _RankListViewState extends State<RankListView> {
+class RankListView extends StatelessWidget {
+  final List<Ranker> rankers;
+  const RankListView({required this.rankers, super.key});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -283,7 +318,7 @@ class _RankListViewState extends State<RankListView> {
         borderRadius: BorderRadius.circular(15),
       ),
       child: ListView.builder(
-        itemCount: 100,
+        itemCount: rankers.length - 3,
         itemBuilder: (context, index) {
           if (index < 2) return const SizedBox.shrink();
           return Container(
