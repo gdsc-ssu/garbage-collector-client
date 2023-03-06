@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/screens/screens.dart';
+import 'package:garbage_collector/utils/utils.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:garbage_collector/styles/styles.dart';
@@ -52,8 +53,11 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                 width: 150,
                 height: 150,
                 decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                      image:
+                          Image.asset('assets/images/trash_image.png').image),
+                ),
               ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -164,12 +168,14 @@ class _ThrowableMarkerBottomSheetState
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Container(
-                width: 150,
-                height: 150,
-                decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(10)),
-              ),
+                  width: 150,
+                  height: 150,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                        image:
+                            Image.asset('assets/images/trash_image.png').image),
+                  )),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
