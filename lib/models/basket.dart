@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:http/http.dart' as http;
 import 'package:garbage_collector/env/env.dart';
 import 'package:garbage_collector/utils/utils.dart';
@@ -11,8 +9,6 @@ class Basket {
   final String detailAddress;
   final double lat;
   final double lng;
-  final int? userTrash;
-  final DateTime updatedAt;
 
   Basket(
     this.id,
@@ -20,8 +16,6 @@ class Basket {
     this.detailAddress,
     this.lat,
     this.lng,
-    this.userTrash,
-    this.updatedAt,
   );
 
   factory Basket.fromJson(Map<String, dynamic> json) {
@@ -31,8 +25,6 @@ class Basket {
       json['detailAddress'] as String,
       json['lat'] as double,
       json['lng'] as double,
-      json['userTrash'] as int?,
-      DateTime.parse(json['updatedAt'] as String),
     );
   }
 
@@ -49,7 +41,25 @@ class Basket {
 
     if (response.statusCode == 200) {
       List<dynamic> baskets = json.decode(response.body)['result'];
-      log(baskets.toString());
+      return baskets
+          .map((basket) => Basket.fromJson(basket as Map<String, dynamic>))
+          .toList();
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
+  static Future<List<Basket>> rangeBaskets(
+      double lat1, double lng1, double lat2, double lng2) async {
+    final response = await http.post(
+      Uri.parse('${ENV.apiEndpoint}/baskets'),
+      headers: {"Content-Type": "application/json; charset=UTF-8"},
+      body:
+          jsonEncode({"lat1": lat1, "lng1": lng1, "lat2": lat2, "lng2": lng2}),
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> baskets = json.decode(response.body)['result'];
       return baskets
           .map((basket) => Basket.fromJson(basket as Map<String, dynamic>))
           .toList();
