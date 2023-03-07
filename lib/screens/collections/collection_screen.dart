@@ -1,17 +1,12 @@
-import 'dart:async';
-import 'dart:developer';
-
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/styles/color.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:garbage_collector/models/models.dart' as models;
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/utils/utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class CollectionScreen extends StatefulWidget {
   const CollectionScreen({super.key});
@@ -323,6 +318,8 @@ class CollectionBox extends StatefulWidget {
 }
 
 class _CollectionBoxState extends State<CollectionBox> {
+  int indicatorIndex = 0;
+  final collectionDurationValue = 300;
   CarouselController buttonCarouselController = CarouselController();
   @override
   Widget build(BuildContext context) {
@@ -346,227 +343,202 @@ class _CollectionBoxState extends State<CollectionBox> {
                 ),
               ),
             ),
-            Container(
+            SizedBox(
               child: Container(
-                decoration: BoxDecoration(),
                 margin: const EdgeInsets.only(
                   left: 10,
                   right: 10,
                 ),
-                child: CarouselSlider.builder(
-                    carouselController: buttonCarouselController,
-                    itemCount: 5, //쓰레기 종류 갯수
-                    itemBuilder: (context, index, realIndex) {
-                      return Container(
-                        decoration: BoxDecoration(),
-                        margin: const EdgeInsets.only(left: 20, right: 20),
-                        child: Stack(
-                          children: [
-                            Container(
-                              height: 380,
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.9),
-                                    spreadRadius: 0,
-                                    blurRadius: 5.0,
-                                    offset: const Offset(
-                                        1, 5), // changes position of shadow
-                                  ),
-                                ],
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(
-                                    15,
-                                  ),
-                                ),
-                                gradient: LinearGradient(
-                                  begin: FractionalOffset.topLeft,
-                                  end: FractionalOffset.bottomRight,
-                                  colors: [
-                                    collectionOuterTopLeftColors[index],
-                                    collectionOuterBottomRightColors[index],
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    CarouselSlider.builder(
+                      carouselController: buttonCarouselController,
+                      itemCount: 5, //쓰레기 종류 갯수
+                      itemBuilder: (context, index, realIndex) {
+                        return Container(
+                          margin: const EdgeInsets.only(left: 20, right: 20),
+                          child: Stack(
+                            children: [
+                              Container(
+                                height: 380,
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.9),
+                                      spreadRadius: 0,
+                                      blurRadius: 5.0,
+                                      offset: const Offset(
+                                          1, 5), // changes position of shadow
+                                    ),
                                   ],
-                                  stops: const [0.1, 1],
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(
+                                      15,
+                                    ),
+                                  ),
+                                  gradient: LinearGradient(
+                                    begin: FractionalOffset.topLeft,
+                                    end: FractionalOffset.bottomRight,
+                                    colors: [
+                                      collectionOuterTopLeftColors[index],
+                                      collectionOuterBottomRightColors[index],
+                                    ],
+                                    stops: const [0.1, 1],
+                                  ),
                                 ),
                               ),
-                            ),
-                            Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                      bottom: 10,
-                                    ),
-                                    child: Text(
-                                      collectionName[index],
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
+                              Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        bottom: 10,
                                       ),
-                                    ),
-                                  ),
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        height: 230,
-                                        width: 200,
-                                        decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.black.withOpacity(0.4),
-                                              spreadRadius: 0,
-                                              blurRadius: 5.0,
-                                              offset: const Offset(1,
-                                                  5), // changes position of shadow
-                                            ),
-                                          ],
-                                          color: collectionInnerColors
-                                              .elementAt(index),
-                                          borderRadius: const BorderRadius.all(
-                                            Radius.circular(15),
-                                          ),
+                                      child: Text(
+                                        collectionName[index],
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
                                         ),
                                       ),
-                                      Column(
-                                        children: [
-                                          Container(
-                                            width: 200,
-                                            height: 200,
-                                            child:
-                                                collectionTrashCharacter[index],
-                                          ),
-                                          Container(
-                                            child: const Text(
-                                              "LV 1   콜라버려려려러",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500),
+                                    ),
+                                    Stack(
+                                      children: [
+                                        Container(
+                                          height: 230,
+                                          width: 200,
+                                          decoration: BoxDecoration(
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(0.4),
+                                                spreadRadius: 0,
+                                                blurRadius: 5.0,
+                                                offset: const Offset(1,
+                                                    5), // changes position of shadow
+                                              ),
+                                            ],
+                                            color: collectionInnerColors
+                                                .elementAt(index),
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                              Radius.circular(15),
                                             ),
-                                          )
+                                          ),
+                                        ),
+                                        Column(
+                                          children: [
+                                            SizedBox(
+                                              width: 200,
+                                              height: 200,
+                                              child: collectionTrashCharacter[
+                                                  index],
+                                            ),
+                                            const SizedBox(
+                                              child: Text(
+                                                "LV 1   콜라버려려려러",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        top: 15,
+                                        left: 60,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Flexible(
+                                            flex: 8,
+                                            child: Container(
+                                              width: 150,
+                                              height: 7,
+                                              decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(15)),
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          Flexible(
+                                            flex: 2,
+                                            child: Container(
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                "$index%",
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                      top: 15,
-                                      left: 60,
                                     ),
-                                    child: Row(
-                                      children: [
-                                        Flexible(
-                                          flex: 8,
-                                          child: Container(
-                                            width: 150,
-                                            height: 7,
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(15)),
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                        Flexible(
-                                          flex: 2,
-                                          child: Container(
-                                            alignment: Alignment.centerRight,
-                                            child: Text(
-                                              "$index%",
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(
-                                      top: 30,
-                                    ),
-                                    // child: TweenAnimationBuilder(
-                                    //   tween: Tween<double>(begin: 0, end: 0.5),
-                                    //   duration: const Duration(milliseconds: 500),
-                                    //   builder: (context, value, child) =>
-                                    //       LinearProgressIndicator(
-                                    //     value: value,
-                                    //     backgroundColor: Colors.grey,
-                                    //   ),
-                                    // ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        for (int i = 0; i < 5; i++)
-                                          if (index == i)
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                right: 10,
-                                                left: 10,
-                                              ),
-                                              child: CollentionBottomColor(
-                                                  index: i),
-                                            )
-                                          else
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                right: 10,
-                                                left: 10,
-                                              ),
-                                              child: const Icon(
-                                                Icons.circle,
-                                                size: 15,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              child: IconButton(
-                                onPressed: () =>
-                                    buttonCarouselController.previousPage(
-                                        duration:
-                                            const Duration(milliseconds: 500),
-                                        curve: Curves.linear),
-                                icon: const Icon(
-                                  Icons.chevron_left,
-                                  color: Color.fromRGBO(255, 255, 255, 0.8),
-                                  size: 40,
+                                    const SizedBox(
+                                      height: 30,
+                                    )
+                                  ],
                                 ),
                               ),
-                            ),
-                            Container(
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                onPressed: () =>
-                                    buttonCarouselController.nextPage(
-                                        duration:
-                                            const Duration(milliseconds: 500),
-                                        curve: Curves.linear),
-                                icon: const Icon(
-                                  Icons.chevron_right,
-                                  color: Color.fromRGBO(255, 255, 255, 0.8),
-                                  size: 40,
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: IconButton(
+                                  onPressed: () =>
+                                      buttonCarouselController.previousPage(
+                                          duration: Duration(
+                                              milliseconds:
+                                                  collectionDurationValue),
+                                          curve: Curves.linear),
+                                  icon: const Icon(
+                                    Icons.chevron_left,
+                                    color: Color.fromRGBO(255, 255, 255, 0.8),
+                                    size: 40,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    options: CarouselOptions(
-                      height: 400,
-                      viewportFraction: 1,
-                    )),
+                              Container(
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                  onPressed: () =>
+                                      buttonCarouselController.nextPage(
+                                          duration: Duration(
+                                              milliseconds:
+                                                  collectionDurationValue),
+                                          curve: Curves.linear),
+                                  icon: const Icon(
+                                    Icons.chevron_right,
+                                    color: Color.fromRGBO(255, 255, 255, 0.8),
+                                    size: 40,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      options: CarouselOptions(
+                        onPageChanged: (pageindex, reason) => setState(() {
+                          indicatorIndex = pageindex;
+                        }),
+                        height: 400,
+                        viewportFraction: 1,
+                      ),
+                    ),
+                    Align(
+                        alignment: Alignment.bottomCenter,
+                        child: indicator(indicatorIndex))
+                  ],
+                ),
               ),
             ),
           ],
@@ -594,3 +566,25 @@ class _CollentionBottomColorState extends State<CollentionBottomColor> {
     );
   }
 }
+
+Widget imageSlider(path, index) => Container(
+      width: double.infinity,
+      height: 240,
+      color: Colors.grey,
+      child: Image.asset(path, fit: BoxFit.cover),
+    );
+
+Widget indicator(int curIndex) => Container(
+      margin: const EdgeInsets.only(bottom: 35.0),
+      alignment: Alignment.bottomCenter,
+      child: AnimatedSmoothIndicator(
+        duration: const Duration(milliseconds: 100),
+        activeIndex: curIndex,
+        count: 5,
+        effect: WormEffect(
+            dotHeight: 15,
+            dotWidth: 15,
+            activeDotColor: collectionInnerColors[curIndex],
+            dotColor: Colors.white.withOpacity(0.6)),
+      ),
+    );
