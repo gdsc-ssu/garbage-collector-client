@@ -47,58 +47,65 @@ class _RankScreen extends State<RankScreen> {
     });
   }
 
+  Future<List<Ranker>> _loadRanker() async {
+    _rankers = await Ranker.totalRank();
+    log(_rankers.length.toString());
+    return _rankers;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              begin: FractionalOffset.topCenter,
-              end: FractionalOffset.bottomCenter,
-              colors: [
-                ColorSystem.primary,
-                Colors.white,
-              ],
-              stops: [
-                0.6,
-                1
-              ]),
-        ),
-        child: Column(
-          children: [
-            TopThreeRanks(_top3),
-            Flexible(
-              flex: 6,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50)),
-                child: Container(
-                  color: Colors.white,
-                  child: RankListView(rankers: _rankers),
-                ),
+    return FutureBuilder(
+      future: _loadRanker(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Scaffold(
+            body: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                    begin: FractionalOffset.topCenter,
+                    end: FractionalOffset.bottomCenter,
+                    colors: [
+                      ColorSystem.primary,
+                      Colors.white,
+                    ],
+                    stops: [
+                      0.6,
+                      1
+                    ]),
+              ),
+              child: Column(
+                children: [
+                  TopThreeRanks(_top3),
+                  Flexible(
+                    flex: 6,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(50),
+                          topRight: Radius.circular(50)),
+                      child: Container(
+                        color: Colors.white,
+                        child: RankListView(rankers: _rankers),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-<<<<<<< HEAD
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          // Get.bottomSheet(MarkerBottomSheet(
-          //     basket: Basket(
-          //         1, 'hi', 'do', 37.491736, 126.9560694, 0, DateTime.now())));
-          Get.bottomSheet(MarkerBottomSheet(
-              basket: Basket(
-                  513, 'hi', 'do', 37.491736, 126.9560694, 0, DateTime.now())));
-        },
-        child: Container(
-          color: Colors.white,
-          child: Icon(Icons.ac_unit_rounded),
-        ),
-      ),
-=======
->>>>>>> 279f2e6 (refactor: first rank screen refactoring)
+            floatingActionButton: GestureDetector(
+              onTap: () {
+                Get.bottomSheet(ThrowableMarkerBottomSheet(
+                    basket: Basket(523, '하위', '반가워요', 1, 1)));
+              },
+              child: const Icon(Icons.access_alarm_sharp),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return const Icon(Icons.error_outline);
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }
