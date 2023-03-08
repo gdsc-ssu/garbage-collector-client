@@ -16,7 +16,7 @@ class MarkerBottomSheet extends StatefulWidget {
 
 class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
   late Basket _basket;
-  double distance = 0;
+  double distance = -1;
 
   @override
   void initState() {
@@ -68,17 +68,24 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                         fontSize: 21, fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on),
-                      Text(
-                        '현재 위치로부터 ${distance.toInt()}m',
-                        style: const TextStyle(
-                          fontSize: 15,
+                  if (distance == -1)
+                    const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  else
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on),
+                        Text(
+                          '현재 위치로부터 ${distance.toInt()}m',
+                          style: const TextStyle(
+                            fontSize: 15,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
@@ -228,7 +235,8 @@ class _ThrowableMarkerBottomSheetState
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                       decoration: BoxDecoration(
-                        color: ColorSystem.primary,
+                        color:
+                            (distance < 80) ? ColorSystem.primary : Colors.grey,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
