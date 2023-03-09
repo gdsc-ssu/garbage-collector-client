@@ -112,8 +112,8 @@ class _BeforeLoginState extends State<BeforeLogin> {
                   child: Row(
                     children: [
                       Flexible(
-                        child: Image.network(
-                          "https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA",
+                        child: Image.asset(
+                          "assets/images/googleLogo.png",
                           scale: 20,
                         ),
                       ),
