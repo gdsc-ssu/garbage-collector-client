@@ -89,7 +89,7 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                   const SizedBox(height: 10),
                   GestureDetector(
                     onTap: () {
-                      Get.to(() => ReportScreen(basketId: _basket.id));
+                      Get.to(() => ReportScreen(basket: _basket));
                     },
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -251,6 +251,39 @@ class _ThrowableMarkerBottomSheetState
                         children: const [
                           Icon(Icons.phone),
                           Text('쓰레기 버리기'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(() => ReportScreen(basket: widget.basket));
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.only(top: 10),
+                      decoration: BoxDecoration(
+                        color: ColorSystem.primary,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 3,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(right: 5),
+                            child: const Icon(
+                              Icons.phone,
+                              size: 20,
+                            ),
+                          ),
+                          const Text('쓰레기통 신고하기'),
                         ],
                       ),
                     ),
