@@ -91,22 +91,30 @@ class _CameraScreen extends State<CameraScreen> {
                   ),
                 ),
                 (_isProgress)
-                    ? const Center(child: CircularProgressIndicator())
+                    ? Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text('쓰레기를 분류하는 중이에요',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 24)),
+                            SizedBox(height: 20),
+                            CircularProgressIndicator()
+                          ],
+                        ),
+                      )
                     : Center(
                         child: TrashScreen(
                         category: _category,
                         largeCategory: _largeCategory,
                         baskets: _baskets,
                       )),
-                const Positioned(
-                  left: 10,
-                  top: 20,
-                  child: GoingBackButton(),
-                ),
+                const GoingBackButton(),
                 if (!_isProgress)
                   Positioned(
                     right: 10,
-                    top: 10,
+                    top: 40,
                     child: GestureDetector(
                         onTap: () async {
                           final result = await Get.to(() => CategoryScreen(
@@ -168,13 +176,9 @@ class _CameraScreen extends State<CameraScreen> {
                     }
                   },
                 ),
-                const Positioned(
-                  left: 10,
-                  top: 20,
-                  child: GoingBackButton(),
-                ),
+                const GoingBackButton(),
                 Positioned.fill(
-                  bottom: 10,
+                  bottom: 30,
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: GestureDetector(
@@ -243,16 +247,23 @@ class _CameraScreen extends State<CameraScreen> {
                         }
                       },
                       child: Container(
-                          padding: const EdgeInsets.all(5),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: ColorSystem.primary,
-                          ),
-                          child: const Icon(
-                            Icons.camera,
-                            size: 40,
-                            color: Colors.white,
-                          )),
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: ColorSystem.primary,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 3,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.camera,
+                            color: Colors.white, size: 50),
+                      ),
                     ),
                   ),
                 ),
