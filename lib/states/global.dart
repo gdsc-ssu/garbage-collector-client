@@ -88,7 +88,8 @@ class GlobalState extends GetxController {
         icon: BitmapDescriptor.fromBytes(markerImage),
         position: LatLng(basket.lat, basket.lng),
         onTap: () {
-          Get.bottomSheet(ThrowableMarkerBottomSheet(basket: basket));
+          Get.bottomSheet(
+              ThrowableMarkerBottomSheet(basket: basket, isThrowable: true));
         });
   }
 
@@ -144,10 +145,5 @@ class GlobalState extends GetxController {
     super.onInit();
 
     await load();
-    // final currentRoute = Get.currentRoute;
-
-    // if (currentRoute != '/' && currentRoute != '/SplashScreen') {
-    //   return;
-    // }
   }
 }

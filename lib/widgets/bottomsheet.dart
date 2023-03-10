@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/models/models.dart';
+import 'package:garbage_collector/states/states.dart';
 
 class MarkerBottomSheet extends StatefulWidget {
   final Basket basket;
@@ -106,9 +107,15 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                         ],
                       ),
                       child: Row(
-                        children: const [
-                          Icon(Icons.phone),
-                          Text('쓰레기통 신고하기'),
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(right: 5),
+                            child: const Icon(
+                              Icons.phone,
+                              size: 20,
+                            ),
+                          ),
+                          const Text('쓰레기통 신고하기'),
                         ],
                       ),
                     ),
@@ -130,7 +137,9 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
 
 class ThrowableMarkerBottomSheet extends StatefulWidget {
   final Basket basket;
-  const ThrowableMarkerBottomSheet({required this.basket, super.key});
+  final bool isThrowable;
+  const ThrowableMarkerBottomSheet(
+      {required this.basket, required this.isThrowable, super.key});
 
   @override
   State<ThrowableMarkerBottomSheet> createState() =>
@@ -139,16 +148,16 @@ class ThrowableMarkerBottomSheet extends StatefulWidget {
 
 class _ThrowableMarkerBottomSheetState
     extends State<ThrowableMarkerBottomSheet> {
-  late Basket _basket;
+  final _globalStates = Get.find<GlobalState>();
   double distance = 0;
 
   @override
   void initState() {
     super.initState();
-    _basket = widget.basket;
+
     Geolocator.getCurrentPosition().then((location) {
-      distance = Geolocator.distanceBetween(
-          location.latitude, location.longitude, _basket.lat, _basket.lng);
+      distance = Geolocator.distanceBetween(location.latitude,
+          location.longitude, widget.basket.lat, widget.basket.lng);
       setState(() {});
     });
   }
@@ -182,7 +191,7 @@ class _ThrowableMarkerBottomSheetState
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    _basket.basketName,
+                    widget.basket.basketName,
                     style: const TextStyle(
                         fontSize: 21, fontWeight: FontWeight.w700),
                   ),
@@ -205,6 +214,12 @@ class _ThrowableMarkerBottomSheetState
                         showToast('너무 멀리서 시도중입니다. 가까이에서 시도해주세요.');
                         return;
                       }
+                      if (!widget.isThrowable) {
+                        //TODO 사진 찍기로 이동
+                        return;
+                      }
+                      _globalStates.setTargetCategory('', '');
+
                       Get.snackbar(
                         '플라스틱 아이템 카드를 획득했어요!',
                         '한번 확인해볼까요?',
@@ -249,7 +264,7 @@ class _ThrowableMarkerBottomSheetState
                       ),
                       child: Row(
                         children: const [
-                          Icon(Icons.phone),
+                          Icon(Icons.delete),
                           Text('쓰레기 버리기'),
                         ],
                       ),
