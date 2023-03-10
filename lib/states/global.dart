@@ -23,6 +23,8 @@ class GlobalState extends GetxController {
   RxMap<String, Marker> throwableMarkers = RxMap<String, Marker>({});
   RxList<LatLng> polyline = RxList<LatLng>([]);
   String token = "";
+  String trashType1 = '';
+  String trashType2 = '';
   late LatLng latlng;
 
   Set<Marker> get markerList =>
@@ -97,6 +99,11 @@ class GlobalState extends GetxController {
       pref.setString('accessToken', newUser.accessToken!);
       pref.setString('refreshToken', newUser.refreshToken!);
     });
+  }
+
+  void setTargetCategory(String type1, String type2) {
+    trashType1 = type1;
+    trashType2 = type2;
   }
 
   Future<bool> auth() async {

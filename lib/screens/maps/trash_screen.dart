@@ -151,6 +151,8 @@ class _TrashScreenState extends State<TrashScreen> {
                       LatLng(selectedBasket.lat, selectedBasket.lng)),
                 );
               }
+              _globalStates.setTargetCategory(
+                  widget.largeCategory, widget.category.toUpperCase());
 
               Get.offAll(() => const HomeScreen());
             },
