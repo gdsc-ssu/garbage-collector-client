@@ -7,7 +7,6 @@ import 'package:garbage_collector/widgets/widgets.dart';
 import 'package:get/get.dart';
 import 'package:garbage_collector/styles/color.dart';
 import 'package:garbage_collector/states/states.dart';
-import 'package:tuple/tuple.dart';
 
 class RankScreen extends StatefulWidget {
   const RankScreen({super.key});
@@ -17,39 +16,15 @@ class RankScreen extends StatefulWidget {
 
 class _RankScreen extends State<RankScreen> {
   final _globalStates = Get.find<GlobalState>();
-  List<Ranker> _rankers = [
-    Ranker(-1, "익명", "", 0),
-    Ranker(-1, "익명", "", 0),
-    Ranker(-1, "익명", "", 0),
-    Ranker(-1, "익명", "", 0),
-    Ranker(-1, "익명", "", 0)
-  ];
-  final List<Ranker> _top3 = [
-    Ranker(-1, "익명", "", 0),
-    Ranker(-1, "익명", "", 0),
-    Ranker(-1, "익명", "", 0)
-  ];
+  List<Ranker> _rankers = [];
 
   @override
   void initState() {
     super.initState();
-    Ranker.totalRank().then((rankers) {
-      _rankers = rankers;
-
-      for (int i = 0; i < 3 && i < rankers.length; i++) {
-        _top3[i] = rankers[i];
-      }
-      _rankers.clear();
-      for (int i = 0; i < 100; i++) {
-        _rankers.add(Ranker(-1, "익명", "", 0));
-      }
-      setState(() {});
-    });
   }
 
   Future<List<Ranker>> _loadRanker() async {
     _rankers = await Ranker.totalRank();
-    log(_rankers.length.toString());
     return _rankers;
   }
 
@@ -76,7 +51,7 @@ class _RankScreen extends State<RankScreen> {
               ),
               child: Column(
                 children: [
-                  TopThreeRanks(_top3),
+                  TopThreeRanks(_rankers),
                   Flexible(
                     flex: 6,
                     child: ClipRRect(
@@ -92,13 +67,6 @@ class _RankScreen extends State<RankScreen> {
                 ],
               ),
             ),
-            floatingActionButton: GestureDetector(
-              onTap: () {
-                Get.bottomSheet(ThrowableMarkerBottomSheet(
-                    basket: Basket(523, '하위', '반가워요', 1, 1)));
-              },
-              child: const Icon(Icons.access_alarm_sharp),
-            ),
           );
         } else if (snapshot.hasError) {
           return const Icon(Icons.error_outline);
@@ -111,9 +79,9 @@ class _RankScreen extends State<RankScreen> {
 }
 
 class TopThreeRanks extends StatelessWidget {
-  final List<Ranker> top3;
+  final List<Ranker> ranker;
 
-  const TopThreeRanks(this.top3, {super.key});
+  const TopThreeRanks(this.ranker, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -144,15 +112,15 @@ class TopThreeRanks extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    (top3[1].profileImg == "")
+                    (ranker[1].profileImg == "")
                         ? const Icon(
                             Icons.account_circle_rounded,
                             color: Color.fromRGBO(255, 255, 255, 0.7),
                             size: 80,
                           )
-                        : CircularProfileImage(imgUrl: top3[1].profileImg),
+                        : CircularProfileImage(imgUrl: ranker[1].profileImg),
                     Text(
-                      top3[1].nickname,
+                      ranker[1].nickname,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -160,7 +128,7 @@ class TopThreeRanks extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      top3[1].totalScore.toString(),
+                      ranker[1].totalScore.toString(),
                       style: const TextStyle(color: Colors.white),
                     ),
                     Container(
@@ -200,15 +168,15 @@ class TopThreeRanks extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    (top3[0].profileImg == "")
+                    (ranker[0].profileImg == "")
                         ? const Icon(
                             Icons.account_circle_rounded,
                             color: Color.fromRGBO(255, 255, 255, 0.7),
                             size: 80,
                           )
-                        : CircularProfileImage(imgUrl: top3[0].profileImg),
+                        : CircularProfileImage(imgUrl: ranker[0].profileImg),
                     Text(
-                      top3[0].nickname,
+                      ranker[0].nickname,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -216,7 +184,7 @@ class TopThreeRanks extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      top3[0].totalScore.toString(),
+                      ranker[0].totalScore.toString(),
                       style: const TextStyle(color: Colors.white),
                     ),
                     Container(
@@ -256,15 +224,15 @@ class TopThreeRanks extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    (top3[2].profileImg == "")
+                    (ranker[2].profileImg == "")
                         ? const Icon(
                             Icons.account_circle_rounded,
                             color: Color.fromRGBO(255, 255, 255, 0.7),
                             size: 80,
                           )
-                        : CircularProfileImage(imgUrl: top3[2].profileImg),
+                        : CircularProfileImage(imgUrl: ranker[2].profileImg),
                     Text(
-                      top3[2].nickname,
+                      ranker[2].nickname,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -272,7 +240,7 @@ class TopThreeRanks extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      top3[2].totalScore.toString(),
+                      ranker[2].totalScore.toString(),
                       style: const TextStyle(color: Colors.white),
                     ),
                     Container(
@@ -325,24 +293,30 @@ class RankListView extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),
       ),
       child: ListView.builder(
-        itemCount: rankers.length - 3,
+        itemCount: rankers.length,
         itemBuilder: (context, index) {
-          if (index < 2) return const SizedBox.shrink();
+          final ranker = rankers[index];
+          if (index <= 2) {
+            return const SizedBox.shrink();
+          }
           return Container(
             decoration: const BoxDecoration(
                 border: Border(
-                    top: BorderSide(
-                        width: 2, color: Color.fromRGBO(240, 242, 244, 1)))),
-            width: 100,
+              top: BorderSide(
+                width: 2,
+                color: Color.fromRGBO(240, 242, 244, 1),
+              ),
+            )),
             height: 60,
             child: Center(
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     alignment: Alignment.centerRight,
-                    width: 70,
+                    width: 60,
                     child: Text(
-                      index.toString(),
+                      '${index + 1}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -350,32 +324,26 @@ class RankListView extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    // color: Color.fromRGBO(153, 153, 153, 1),
-                    child: const Icon(
-                      Icons.account_circle_rounded,
-                      color: Color.fromRGBO(190, 190, 190, 1),
-                      size: 40,
-                    ),
+                    margin: const EdgeInsets.fromLTRB(20, 0, 10, 0),
+                    child: CircularProfileImage(
+                        imgUrl: rankers[index].profileImg, size: 40),
                   ),
-                  Container(
-                    // margin: EdgeInsets.fromLTRB(0, 0, 150, 0),
+                  SizedBox(
                     width: 200,
-                    child: const Text(
-                      '최상원',
-                      style: TextStyle(
-                        fontSize: 16,
+                    child: Text(
+                      ranker.nickname,
+                      style: const TextStyle(
+                        fontSize: 15,
                         fontWeight: FontWeight.w500,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 0, 50, 0),
-                    child: const Text(
-                      '200',
-                      style: TextStyle(
-                        color: Color.fromRGBO(153, 153, 153, 1),
-                      ),
+                  SizedBox(
+                    width: 60,
+                    child: Text(
+                      '${ranker.totalScore}',
+                      style: const TextStyle(color: Colors.grey),
                     ),
                   )
                 ],
