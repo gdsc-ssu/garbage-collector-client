@@ -7,12 +7,25 @@ class CircularProfileImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(50),
-        child: Image.network(
-          imgUrl,
-          height: size,
-          fit: BoxFit.cover,
-        ));
+    if (imgUrl == '') {
+      return Icon(
+        Icons.account_circle_rounded,
+        color: Colors.grey,
+        size: size,
+      );
+    }
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.withOpacity(0.5), width: 2),
+        shape: BoxShape.circle,
+      ),
+      child: CircleAvatar(
+          backgroundImage: NetworkImage(
+        imgUrl,
+        scale: size,
+      )),
+    );
   }
 }
