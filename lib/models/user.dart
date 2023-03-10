@@ -79,14 +79,14 @@ class User {
     }
   }
 
-  static Future<User> auth(String accessToken) async {
+  static Future<User> auth(String token) async {
     String api = "${ENV.apiEndpoint}/user/auth";
 
     final response = await http.get(
       Uri.parse(api),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
-        "authorization": accessToken
+        "authorization": token
       },
     );
 
