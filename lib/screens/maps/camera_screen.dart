@@ -64,6 +64,12 @@ class _CameraScreen extends State<CameraScreen> {
   }
 
   @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _isCapture
