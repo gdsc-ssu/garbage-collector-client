@@ -78,17 +78,10 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
             child: TabBarView(
               controller: _tabController,
               physics: const NeverScrollableScrollPhysics(),
-              children: [
-                const CollectionScreen(),
-                Navigator(
-                  key: GlobalState.navigatorKey,
-                  onGenerateRoute: ((settings) {
-                    return MaterialPageRoute(builder: ((context) {
-                      return const MainMap();
-                    }));
-                  }),
-                ),
-                const RankScreen(),
+              children: const [
+                CollectionScreen(),
+                MainMap(),
+                RankScreen(),
               ],
             ),
           ),

@@ -152,10 +152,7 @@ class _TrashScreenState extends State<TrashScreen> {
                 );
               }
 
-              GlobalState.navigatorKey.currentState!
-                  .push(MaterialPageRoute(builder: ((context) {
-                return const MainMap();
-              })));
+              Get.offAll(() => const HomeScreen());
             },
             child: Container(
               width: Get.width * 0.5,
