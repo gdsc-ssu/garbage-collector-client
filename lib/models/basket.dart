@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:garbage_collector/env/env.dart';
 import 'package:garbage_collector/utils/utils.dart';
+import 'package:garbage_collector/models/models.dart';
 
 class Basket {
   final int id;
@@ -85,6 +86,26 @@ class Basket {
     );
     if (response.statusCode == 200) {
       return;
+    } else {
+      throw newHTTPException(response.statusCode, response.body);
+    }
+  }
+
+  Future<User> throwTrash(String token, String type1, String type2) async {
+    String api = "${ENV.apiEndpoint}/trash";
+
+    final response = await http.post(
+      Uri.parse(api),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8",
+        "authorization": token
+      },
+      body: jsonEncode(
+          {"trashType1": type1, "trashType2": type2, "basketId": id}),
+    );
+
+    if (response.statusCode == 200) {
+      return User.fromJson(json.decode(response.body)['result']);
     } else {
       throw newHTTPException(response.statusCode, response.body);
     }
