@@ -112,7 +112,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
             tabs: [
               Tab(
                 icon: Icon(
-                  Icons.list_alt,
+                  Icons.book_outlined,
                   color: (_index == 0) ? ColorSystem.primary : Colors.grey,
                   size: 36,
                 ),
@@ -126,7 +126,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               Tab(
                 icon: Icon(
-                  Icons.wine_bar,
+                  Icons.star_border,
                   color: (_index == 2) ? ColorSystem.primary : Colors.grey,
                   size: 36,
                 ),
