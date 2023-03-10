@@ -93,27 +93,24 @@ class GoingBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          if (func != null) {
-            func!();
-          } else {
-            GlobalState.navigatorKey.currentState!
-                .push(MaterialPageRoute(builder: ((context) {
-              return const MainMap();
-            })));
-          }
-        },
-        child: Container(
-          padding: const EdgeInsets.all(5),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-          ),
-          child: const Icon(
-            Icons.chevron_left_rounded,
-            size: 30,
-          ),
-        ));
+    return Positioned(
+      top: 40,
+      left: 20,
+      child: GestureDetector(
+          onTap: () {
+            Get.back();
+          },
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+            ),
+            child: const Icon(
+              Icons.chevron_left_rounded,
+              size: 30,
+            ),
+          )),
+    );
   }
 }
