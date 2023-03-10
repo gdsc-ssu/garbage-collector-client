@@ -136,15 +136,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 ],
               ),
             ),
-            Positioned(
-              left: 10,
-              top: 40,
-              child: GoingBackButton(
-                func: () {
-                  Get.back();
-                },
-              ),
-            ),
+            const GoingBackButton(),
           ],
         ),
       ),

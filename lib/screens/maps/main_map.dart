@@ -176,10 +176,7 @@ class _MainMap extends State<MainMap> {
                 alignment: Alignment.bottomCenter,
                 child: GestureDetector(
                   onTap: () {
-                    GlobalState.navigatorKey.currentState!
-                        .push(MaterialPageRoute(builder: ((context) {
-                      return const CameraScreen();
-                    })));
+                    Get.to(() => const CameraScreen());
                   },
                   child: Container(
                       padding: const EdgeInsets.all(5),
