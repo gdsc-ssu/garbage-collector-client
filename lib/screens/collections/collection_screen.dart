@@ -24,13 +24,13 @@ class _CollectionScreenState extends State<CollectionScreen> {
         child: (_globalStates.user.value == null)
             ? const BeforeLogin()
             : Column(
-                children: const <Widget>[
-                  Flexible(
-                    flex: 7,
+                children: <Widget>[
+                  SizedBox(
+                    height: Get.height * 0.33,
                     child: MyInfoBox(),
                   ),
-                  Flexible(
-                    flex: 13,
+                  SizedBox(
+                    height: Get.height * 0.53,
                     child: CollectionBox(),
                   ),
                 ],
@@ -144,16 +144,17 @@ class MyInfoBox extends StatefulWidget {
 }
 
 class _MyInfoBoxState extends State<MyInfoBox> {
+  final _globalStates = Get.find<GlobalState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        margin: const EdgeInsets.all(30),
+        margin: const EdgeInsets.only(left: 30, right: 30, top: 30),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: const EdgeInsets.only(bottom: 30),
+              margin: EdgeInsets.only(bottom: Get.height * 0.01),
               child: const Text(
                 "My Info",
                 style: TextStyle(
@@ -164,7 +165,9 @@ class _MyInfoBoxState extends State<MyInfoBox> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(20),
+              height: 150,
+              padding: const EdgeInsets.only(
+                  left: 20, right: 20, top: 10, bottom: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: const BorderRadius.all(
@@ -227,12 +230,20 @@ class _MyInfoBoxState extends State<MyInfoBox> {
                               Radius.circular(10),
                             ),
                           ),
-                          child: const Center(
-                            child: Text(
-                              "라이벌 신청",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
+                          child: GestureDetector(
+                            onTap: () async {
+                              await _globalStates.signOut();
+                              setState(() {
+                                Get.offAll(() => const HomeScreen());
+                              });
+                            },
+                            child: const Center(
+                              child: Text(
+                                "로그아웃",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
                               ),
                             ),
                           ),
@@ -325,6 +336,7 @@ class _CollectionBoxState extends State<CollectionBox> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        alignment: Alignment.center,
         margin: const EdgeInsets.only(
           left: 30,
           right: 30,
@@ -333,7 +345,7 @@ class _CollectionBoxState extends State<CollectionBox> {
           children: [
             Container(
               alignment: Alignment.centerLeft,
-              margin: const EdgeInsets.only(bottom: 30),
+              margin: EdgeInsets.only(bottom: Get.height * 0.02),
               child: const Text(
                 "Collection",
                 style: TextStyle(
@@ -357,11 +369,11 @@ class _CollectionBoxState extends State<CollectionBox> {
                       itemCount: 5, //쓰레기 종류 갯수
                       itemBuilder: (context, index, realIndex) {
                         return Container(
-                          margin: const EdgeInsets.only(left: 20, right: 20),
+                          margin: EdgeInsets.only(left: 20, right: 20),
                           child: Stack(
                             children: [
                               Container(
-                                height: 380,
+                                height: Get.height * 0.4,
                                 decoration: BoxDecoration(
                                   boxShadow: [
                                     BoxShadow(
@@ -394,6 +406,7 @@ class _CollectionBoxState extends State<CollectionBox> {
                                   children: [
                                     Container(
                                       margin: const EdgeInsets.only(
+                                        top: 5,
                                         bottom: 10,
                                       ),
                                       child: Text(
@@ -406,9 +419,10 @@ class _CollectionBoxState extends State<CollectionBox> {
                                       ),
                                     ),
                                     Stack(
+                                      alignment: Alignment.center,
                                       children: [
                                         Container(
-                                          height: 230,
+                                          height: Get.height * 0.26,
                                           width: 200,
                                           decoration: BoxDecoration(
                                             boxShadow: [
@@ -432,8 +446,7 @@ class _CollectionBoxState extends State<CollectionBox> {
                                         Column(
                                           children: [
                                             SizedBox(
-                                              width: 200,
-                                              height: 200,
+                                              height: Get.height * 0.24,
                                               child: collectionTrashCharacter[
                                                   index],
                                             ),
@@ -451,11 +464,12 @@ class _CollectionBoxState extends State<CollectionBox> {
                                       ],
                                     ),
                                     Container(
-                                      margin: const EdgeInsets.only(
-                                        top: 15,
-                                        left: 60,
+                                      margin: EdgeInsets.only(
+                                        top: Get.height * 0.01,
                                       ),
                                       child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Flexible(
                                             flex: 8,
@@ -492,14 +506,14 @@ class _CollectionBoxState extends State<CollectionBox> {
                               ),
                               Container(
                                 alignment: Alignment.centerLeft,
-                                child: IconButton(
-                                  onPressed: () =>
+                                child: GestureDetector(
+                                  onTap: () =>
                                       buttonCarouselController.previousPage(
                                           duration: Duration(
                                               milliseconds:
                                                   collectionDurationValue),
                                           curve: Curves.linear),
-                                  icon: const Icon(
+                                  child: const Icon(
                                     Icons.chevron_left,
                                     color: Color.fromRGBO(255, 255, 255, 0.8),
                                     size: 40,
@@ -508,14 +522,15 @@ class _CollectionBoxState extends State<CollectionBox> {
                               ),
                               Container(
                                 alignment: Alignment.centerRight,
-                                child: IconButton(
-                                  onPressed: () =>
+                                // margin: EdgeInsets.only(right: 6),
+                                child: GestureDetector(
+                                  onTap: () =>
                                       buttonCarouselController.nextPage(
                                           duration: Duration(
                                               milliseconds:
                                                   collectionDurationValue),
                                           curve: Curves.linear),
-                                  icon: const Icon(
+                                  child: const Icon(
                                     Icons.chevron_right,
                                     color: Color.fromRGBO(255, 255, 255, 0.8),
                                     size: 40,
@@ -530,7 +545,7 @@ class _CollectionBoxState extends State<CollectionBox> {
                         onPageChanged: (pageindex, reason) => setState(() {
                           indicatorIndex = pageindex;
                         }),
-                        height: 400,
+                        height: Get.height * 0.415,
                         viewportFraction: 1,
                       ),
                     ),
@@ -569,13 +584,13 @@ class _CollentionBottomColorState extends State<CollentionBottomColor> {
 
 Widget imageSlider(path, index) => Container(
       width: double.infinity,
-      height: 240,
+      height: Get.height * 0.2,
       color: Colors.grey,
       child: Image.asset(path, fit: BoxFit.cover),
     );
 
 Widget indicator(int curIndex) => Container(
-      margin: const EdgeInsets.only(bottom: 35.0),
+      margin: EdgeInsets.only(bottom: Get.height * 0.025),
       alignment: Alignment.bottomCenter,
       child: AnimatedSmoothIndicator(
         duration: const Duration(milliseconds: 100),
