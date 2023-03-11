@@ -62,6 +62,11 @@ class GlobalState extends GetxController {
     return 'FAIL';
   }
 
+  Future<void> signOut() async {
+    await GoogleSignIn().signOut();
+    user.value = null;
+  }
+
   Future<void> loadMarkers(
       double lat1, double lng1, double lat2, double lng2) async {
     final markerImage = await markerImageTransform(false);
@@ -136,6 +141,7 @@ class GlobalState extends GetxController {
 
   Future<void> load() async {
     await auth();
+
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.deniedForever ||
         permission == LocationPermission.denied ||
