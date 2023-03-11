@@ -65,16 +65,6 @@ class _MainMap extends State<MainMap> {
               markers: _globalStates.markerList,
               buildingsEnabled: false,
               mapToolbarEnabled: false,
-              polylines: (_globalStates.polyline.value.isNotEmpty)
-                  ? {
-                      Polyline(
-                        polylineId: const PolylineId("route"),
-                        points: _globalStates.polyline,
-                        color: const Color(0xFF4DA140),
-                        width: 6,
-                      )
-                    }
-                  : {},
             ),
             Positioned(
                 right: 10,
