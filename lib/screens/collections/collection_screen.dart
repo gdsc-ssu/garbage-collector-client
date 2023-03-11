@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/utils/utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:garbage_collector/widgets/widgets.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class CollectionScreen extends StatefulWidget {
@@ -91,42 +93,9 @@ class _BeforeLoginState extends State<BeforeLogin> {
                 }
               },
               child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10),
-                child: Container(
-                  alignment: Alignment.center,
-                  width: 200,
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.7),
-                        spreadRadius: 0,
-                        blurRadius: 5.0,
-                        offset:
-                            const Offset(2, 2), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: Image.asset(
-                          "assets/images/googleLogo.png",
-                          scale: 20,
-                        ),
-                      ),
-                      const Text(
-                        "Sign in with Google",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                height: 70,
+                width: Get.width * 1,
+                child: const googleLogin(),
               ),
             ),
           ],
