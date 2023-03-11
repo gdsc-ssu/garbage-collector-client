@@ -152,7 +152,7 @@ class _TrashScreenState extends State<TrashScreen> {
                 );
               }
               _globalStates.setTargetCategory(
-                  widget.largeCategory, widget.category.toUpperCase());
+                  widget.largeCategory, widget.category);
 
               Get.offAll(() => const HomeScreen());
             },

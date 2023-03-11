@@ -105,7 +105,7 @@ class GlobalState extends GetxController {
 
   void setTargetCategory(String type1, String type2) {
     trashType1 = type1;
-    trashType2 = type2;
+    trashType2 = type2.toUpperCase();
   }
 
   Future<bool> auth() async {
