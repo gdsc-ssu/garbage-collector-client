@@ -19,14 +19,14 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _globalStates = Get.find<GlobalState>();
 
-  late final TabController _tabController;
   int _index = 1;
   bool _isPoping = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, initialIndex: 1, vsync: this);
+    _globalStates.tabController =
+        TabController(length: 3, initialIndex: 1, vsync: this);
   }
 
   void _onTapNavigator(int index) async {
@@ -42,7 +42,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
     }
 
     setState(() {
-      _tabController.animateTo(index);
+      _globalStates.tabController.animateTo(index);
       _index = index;
     });
   }
@@ -56,13 +56,13 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
         key: _scaffoldKey,
         body: WillPopScope(
           onWillPop: (() async {
-            if (_index == 1) {
-              GlobalState.navigatorKey.currentState!
-                  .push(MaterialPageRoute(builder: ((context) {
-                return const MainMap();
-              })));
-              return false;
-            }
+            // if (_index == 1) {
+            //   GlobalState.navigatorKey.currentState!
+            //       .push(MaterialPageRoute(builder: ((context) {
+            //     return const MainMap();
+            //   })));
+            //   return false;
+            // }
             if (!_isPoping) {
               _isPoping = true;
               Timer(const Duration(milliseconds: 200), () {
@@ -76,7 +76,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
           }),
           child: SafeArea(
             child: TabBarView(
-              controller: _tabController,
+              controller: _globalStates.tabController,
               physics: const NeverScrollableScrollPhysics(),
               children: const [
                 CollectionScreen(),
