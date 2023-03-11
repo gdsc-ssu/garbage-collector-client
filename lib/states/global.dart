@@ -26,6 +26,7 @@ class GlobalState extends GetxController {
   String trashType1 = '';
   String trashType2 = '';
   late LatLng latlng;
+  late TabController tabController;
 
   Set<Marker> get markerList =>
       markers.values.toSet()..addAll(throwableMarkers.values.toSet());
@@ -132,6 +133,12 @@ class GlobalState extends GetxController {
 
   Future<void> load() async {
     await auth();
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever ||
+        permission == LocationPermission.denied ||
+        permission == LocationPermission.unableToDetermine) {
+      await Geolocator.requestPermission();
+    }
 
     await Geolocator.getCurrentPosition().then((location) {
       latlng = LatLng(location.latitude, location.longitude);
