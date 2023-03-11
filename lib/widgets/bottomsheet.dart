@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/models/models.dart';
 import 'package:garbage_collector/states/states.dart';
+import 'package:garbage_collector/widgets/widgets.dart';
 
 class MarkerBottomSheet extends StatefulWidget {
   final Basket basket;
@@ -44,7 +45,7 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
       enableDrag: false,
       builder: (context) {
         return SizedBox(
-          height: Get.height * 0.3,
+          height: Get.height * 0.35,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -73,55 +74,48 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                         '현재 위치로부터 ${distance.toInt()}m',
                         style: const TextStyle(
                           fontSize: 15,
+                          overflow: TextOverflow.fade,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 10),
                   GestureDetector(
-                    onTap: () {
-                      if (distance > 80) {
+                    onTap: () async {
+                      if (distance > 100) {
                         showToast('너무 멀리서 시도중입니다. 가까이에서 시도해주세요.');
                         return;
                       }
-                      if (!widget.isThrowable) {
-                        //TODO 사진 찍기로 이동
+                      if (_globalStates.user.value == null) {
+                        final result = await Get.dialog(LoginCheckerDialog());
+                        if (result == null) {
+                          return;
+                        }
                         return;
                       }
-                      _globalStates.setTargetCategory('', '');
-
-                      Get.snackbar(
-                        '플라스틱 아이템 카드를 획득했어요!',
-                        '한번 확인해볼까요?',
-                        icon: const Icon(
-                          Icons.check_circle_sharp,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                        mainButton: TextButton(
-                          onPressed: () {
-                            Get.to(() => const SettingScreen());
-                          },
-                          child: const Text(
-                            '확인하기',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        onTap: (snackbar) {
-                          Get.to(() => const SettingScreen());
-                        },
-                        overlayColor: ColorSystem.primary,
-                        duration: const Duration(seconds: 3),
-                        colorText: Colors.white,
-                        backgroundColor: ColorSystem.primary.withOpacity(0.8),
-                        barBlur: 0.5,
-                      );
+                      if (!widget.isThrowable) {
+                        final result = await Get.to(
+                            () => const CameraScreen(isThrowable: false));
+                        if (result == null) {
+                          return;
+                        }
+                        if (result == 'SUCCESS') {
+                          await widget.basket.throwTrash(
+                              _globalStates.token,
+                              _globalStates.trashType1,
+                              _globalStates.trashType2);
+                        }
+                      }
+                      trashSnackbar();
                     },
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      width: 160,
+                      height: 40,
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color:
-                            (distance < 80) ? ColorSystem.primary : Colors.grey,
+                        color: (distance < 100)
+                            ? ColorSystem.primary
+                            : Colors.grey,
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: [
                           BoxShadow(
@@ -133,6 +127,7 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                         ],
                       ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
                           Icon(Icons.delete),
                           Text('쓰레기 버리기'),
@@ -145,8 +140,10 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                       Get.to(() => ReportScreen(basket: widget.basket));
                     },
                     child: Container(
-                      padding: const EdgeInsets.all(10),
+                      width: 160,
+                      height: 40,
                       margin: const EdgeInsets.only(top: 10),
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: ColorSystem.primary,
                         borderRadius: BorderRadius.circular(10),
@@ -160,6 +157,7 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                         ],
                       ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
                             margin: const EdgeInsets.only(right: 5),
