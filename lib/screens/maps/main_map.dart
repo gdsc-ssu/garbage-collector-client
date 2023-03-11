@@ -41,10 +41,10 @@ class _MainMap extends State<MainMap> {
     }
 
     _globalStates.loadMarkers(
-        bounds.southwest.latitude,
-        bounds.southwest.longitude,
-        bounds.northeast.latitude,
-        bounds.northeast.longitude);
+        bounds.southwest.latitude - 0.001,
+        bounds.southwest.longitude - 0.001,
+        bounds.northeast.latitude + 0.001,
+        bounds.northeast.longitude + 0.001);
     setState(() {});
   }
 
