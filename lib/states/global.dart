@@ -21,7 +21,6 @@ class GlobalState extends GetxController {
   Rxn<models.User> user = Rxn<models.User>();
   RxMap<String, Marker> markers = RxMap<String, Marker>({});
   RxMap<String, Marker> throwableMarkers = RxMap<String, Marker>({});
-  RxList<LatLng> polyline = RxList<LatLng>([]);
   String token = "";
   String trashType1 = '';
   String trashType2 = '';
@@ -33,12 +32,12 @@ class GlobalState extends GetxController {
 
   late GoogleMapController mapController;
 
-  Future<void> googleAuth() async {
+  Future<String> googleAuth() async {
     try {
       final GoogleSignInAccount? googleAccount = await GoogleSignIn().signIn();
       if (googleAccount == null) {
         showToast('구글 로그인 중 오류 발생했습니다.');
-        return;
+        return 'FAIL';
       }
       final GoogleSignInAuthentication googleAuth =
           await googleAccount.authentication;
@@ -56,9 +55,11 @@ class GlobalState extends GetxController {
       );
 
       login(user);
+      return 'SUCCESS';
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
     }
+    return 'FAIL';
   }
 
   Future<void> loadMarkers(
