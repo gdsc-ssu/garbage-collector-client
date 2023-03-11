@@ -75,7 +75,10 @@ class GlobalState extends GetxController {
           icon: BitmapDescriptor.fromBytes(markerImage),
           position: LatLng(basket.lat, basket.lng),
           onTap: () {
-            Get.bottomSheet(MarkerBottomSheet(basket: basket));
+            Get.bottomSheet(MarkerBottomSheet(
+              basket: basket,
+              isThrowable: false,
+            ));
           });
     }
   }
@@ -89,8 +92,7 @@ class GlobalState extends GetxController {
         icon: BitmapDescriptor.fromBytes(markerImage),
         position: LatLng(basket.lat, basket.lng),
         onTap: () {
-          Get.bottomSheet(
-              ThrowableMarkerBottomSheet(basket: basket, isThrowable: true));
+          Get.bottomSheet(MarkerBottomSheet(basket: basket, isThrowable: true));
         });
   }
 
