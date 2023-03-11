@@ -56,13 +56,6 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
         key: _scaffoldKey,
         body: WillPopScope(
           onWillPop: (() async {
-            // if (_index == 1) {
-            //   GlobalState.navigatorKey.currentState!
-            //       .push(MaterialPageRoute(builder: ((context) {
-            //     return const MainMap();
-            //   })));
-            //   return false;
-            // }
             if (!_isPoping) {
               _isPoping = true;
               Timer(const Duration(milliseconds: 200), () {
