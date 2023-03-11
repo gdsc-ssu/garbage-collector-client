@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:developer';
-import 'dart:convert';
 import 'package:garbage_collector/models/models.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -15,11 +14,11 @@ import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/widgets/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuple/tuple.dart';
 
 class CameraScreen extends StatefulWidget {
-  const CameraScreen({super.key});
+  final bool isThrowable;
+  const CameraScreen({required this.isThrowable, super.key});
   @override
   State<CameraScreen> createState() => _CameraScreen();
 }
@@ -213,6 +212,7 @@ class _CameraScreen extends State<CameraScreen> {
                                 },
                               ),
                             );
+
                             log(categoryResult.data.toString());
                             _category = categoryResult.data['predicted_type'];
 
@@ -224,6 +224,12 @@ class _CameraScreen extends State<CameraScreen> {
                                 _category == 'plastic' ||
                                 _category == 'white glass') {
                               _largeCategory = 'RECYCLE';
+                            }
+                            if (!widget.isThrowable) {
+                              _globalStates.setTargetCategory(
+                                  _largeCategory, _category);
+                              Get.back(result: 'SUCCESS');
+                              return;
                             }
 
                             _baskets = await Basket.findBaskets(
