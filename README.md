@@ -20,7 +20,7 @@
 
 - Our app was developed with a flutter on the front end, and we used firebase for authentication/authorization, and google map to locate the trash can. The backend developed a server with a spring boot and distributed it through CloudRun, and the AI model was made into tensorflow and distributed through the compute engine.
 
-![image](https://user-images.githubusercontent.com/85864699/224559342-6ba5c332-b3d3-4e62-a56e-076328ffe65b.png)
+<img src="https://user-images.githubusercontent.com/85864699/224559342-6ba5c332-b3d3-4e62-a56e-076328ffe65b.png" width="400" height="300"/>
 
 ### UI
 
