@@ -87,10 +87,7 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                         return;
                       }
                       if (_globalStates.user.value == null) {
-                        final result = await Get.dialog(LoginCheckerDialog());
-                        if (result == null) {
-                          return;
-                        }
+                        await Get.dialog(LoginCheckerDialog());
                         return;
                       }
                       if (!widget.isThrowable) {
