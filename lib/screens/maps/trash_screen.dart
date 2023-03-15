@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/consts/consts.dart';
 import 'package:garbage_collector/models/models.dart';
