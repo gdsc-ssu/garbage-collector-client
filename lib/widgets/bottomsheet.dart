@@ -7,6 +7,7 @@ import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/models/models.dart';
 import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/widgets/widgets.dart';
+import 'package:tuple/tuple.dart';
 
 class MarkerBottomSheet extends StatefulWidget {
   final Basket basket;
@@ -92,18 +93,27 @@ class _MarkerBottomSheetState extends State<MarkerBottomSheet> {
                       }
                       if (!widget.isThrowable) {
                         final result = await Get.to(
-                            () => const CameraScreen(isThrowable: false));
+                                () => const CameraScreen(isThrowable: false))
+                            as Tuple2<String, String>?;
                         if (result == null) {
                           return;
                         }
-                        if (result == 'SUCCESS') {
-                          await widget.basket.throwTrash(
-                              _globalStates.token,
-                              _globalStates.trashType1,
-                              _globalStates.trashType2);
-                        }
+                        await widget.basket
+                            .throwTrash(
+                                _globalStates.token,
+                                result.item1.toUpperCase(),
+                                result.item2.toUpperCase())
+                            .then((user) {
+                          _globalStates.login(user);
+                        });
+                        Get.back();
+                        trashSnackbar(result.item2.toUpperCase());
+                      } else {
+                        Get.back();
+                        trashSnackbar(_globalStates.trashType2);
+                        _globalStates.throwableMarkers.clear();
+                        _globalStates.setTargetCategory('', '');
                       }
-                      trashSnackbar();
                     },
                     child: Container(
                       width: 160,

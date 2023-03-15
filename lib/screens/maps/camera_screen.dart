@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:developer';
+import 'package:flutter/services.dart';
 import 'package:garbage_collector/models/models.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -186,6 +186,7 @@ class _CameraScreen extends State<CameraScreen> {
                           await _cameraController!.takePicture().then((value) {
                             _image = value;
                           });
+                          HapticFeedback.mediumImpact();
 
                           setState(() {
                             _isCapture = true;
@@ -226,9 +227,8 @@ class _CameraScreen extends State<CameraScreen> {
                               _largeCategory = 'RECYCLE';
                             }
                             if (!widget.isThrowable) {
-                              _globalStates.setTargetCategory(
-                                  _largeCategory, _category);
-                              Get.back(result: 'SUCCESS');
+                              Get.back(
+                                  result: Tuple2(_largeCategory, _category));
                               return;
                             }
 
