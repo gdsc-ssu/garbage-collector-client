@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/screens/screens.dart';
@@ -10,7 +12,8 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int initScreenIndex;
+  const HomeScreen({this.initScreenIndex = 1, super.key});
   @override
   State<HomeScreen> createState() => _HomeScreen();
 }
@@ -25,8 +28,9 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _globalStates.tabController =
-        TabController(length: 3, initialIndex: 1, vsync: this);
+    _globalStates.tabController = TabController(
+        length: 3, initialIndex: widget.initScreenIndex, vsync: this);
+    _index = widget.initScreenIndex;
   }
 
   void _onTapNavigator(int index) async {
@@ -51,7 +55,7 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      initialIndex: 1,
+      initialIndex: widget.initScreenIndex,
       child: Scaffold(
         key: _scaffoldKey,
         body: WillPopScope(
@@ -80,7 +84,9 @@ class _HomeScreen extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
         bottomNavigationBar: Container(
-          height: 60,
+          height: (Platform.isAndroid || window.physicalSize.width <= 1080)
+              ? 56
+              : 80,
           decoration: BoxDecoration(
             color: Colors.white,
             boxShadow: [
