@@ -50,7 +50,7 @@ class ItemCardDialog extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('일반 쓰레기 카드 획득!', style: TextStyle(fontSize: 21)),
+              Text('$type 쓰레기 카드 획득!', style: const TextStyle(fontSize: 21)),
               const SizedBox(height: 10),
               Image.asset('assets/images/general.png', width: 200, height: 200),
             ]),
