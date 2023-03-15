@@ -81,7 +81,7 @@ class User {
       Uri.parse(api),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
-        "authorization": token
+        "authorization": 'Bearer $token',
       },
     );
 
@@ -92,14 +92,14 @@ class User {
     }
   }
 
-  static Future<List<User>> totalRank(String accessToken) async {
+  static Future<List<User>> totalRank(String token) async {
     String api = "${ENV.apiEndpoint}/rank/total";
 
     final response = await http.get(
       Uri.parse(api),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
-        "authorization": accessToken
+        "authorization": 'Bearer $token',
       },
     );
 

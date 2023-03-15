@@ -35,7 +35,7 @@ class Basket {
 
     final response = await http.post(Uri.parse(api),
         headers: {
-          "authorization": token,
+          "authorization": 'Bearer $token',
           "Content-Type": "application/json; charset=UTF-8",
         },
         body: jsonEncode({"lat": lat, "lng": lng, "type": type}));
@@ -98,7 +98,7 @@ class Basket {
       Uri.parse(api),
       headers: {
         "Content-Type": "application/json; charset=UTF-8",
-        "authorization": token
+        "authorization": 'Bearer $token',
       },
       body: jsonEncode(
           {"trashType1": type1, "trashType2": type2, "basketId": id}),
