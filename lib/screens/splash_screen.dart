@@ -9,16 +9,11 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreen extends State<SplashScreen> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SafeArea(
         child: Center(
-          child: CircularProgressIndicator(),
+          child: Image.asset('assets/images/splash_image.png', height: 200),
         ),
       ),
     );
