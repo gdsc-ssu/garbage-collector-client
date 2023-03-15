@@ -1,13 +1,12 @@
 import 'package:get/get.dart';
-import 'package:garbage_collector/states/states.dart';
 import 'package:garbage_collector/consts/consts.dart';
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/styles/styles.dart';
+import 'package:garbage_collector/widgets/widgets.dart';
 
-void trashSnackbar() {
-  final globalStates = Get.find<GlobalState>();
+void trashSnackbar(String type) {
   Get.snackbar(
-    '${trashTranslate[globalStates.trashType2]} 아이템 카드를 획득했어요!',
+    '${trashTranslate[type.toLowerCase()] ?? '일반 쓰레기'} 아이템 카드를 획득했어요!',
     '한번 확인해볼까요?',
     icon: const Icon(
       Icons.check_circle_sharp,
@@ -16,7 +15,7 @@ void trashSnackbar() {
     ),
     mainButton: TextButton(
       onPressed: () {
-        globalStates.tabController.animateTo(1);
+        Get.dialog(ItemCardDialog(type: type));
       },
       child: const Text(
         '확인하기',
@@ -24,7 +23,7 @@ void trashSnackbar() {
       ),
     ),
     onTap: (snackbar) {
-      globalStates.tabController.animateTo(1);
+      Get.dialog(ItemCardDialog(type: type));
     },
     overlayColor: ColorSystem.primary,
     duration: const Duration(seconds: 3),
@@ -32,5 +31,4 @@ void trashSnackbar() {
     backgroundColor: ColorSystem.primary.withOpacity(0.8),
     barBlur: 0.5,
   );
-  globalStates.setTargetCategory('', '');
 }
