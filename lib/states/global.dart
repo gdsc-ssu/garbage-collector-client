@@ -2,10 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:garbage_collector/env/env.dart';
 import 'package:garbage_collector/widgets/bottomsheet.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/utils/utils.dart';
@@ -139,26 +137,27 @@ class GlobalState extends GetxController {
   }
 
   Future<void> load() async {
-    await auth();
+    Timer(const Duration(milliseconds: 500), () async {
+      await auth();
 
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever ||
-        permission == LocationPermission.denied ||
-        permission == LocationPermission.unableToDetermine) {
-      await Geolocator.requestPermission();
-    }
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.deniedForever ||
+          permission == LocationPermission.denied ||
+          permission == LocationPermission.unableToDetermine) {
+        await Geolocator.requestPermission();
+      }
 
-    await Geolocator.getCurrentPosition().then((location) {
-      latlng = LatLng(location.latitude, location.longitude);
+      await Geolocator.getCurrentPosition().then((location) {
+        latlng = LatLng(location.latitude, location.longitude);
 
-      Get.offAll(() => const HomeScreen());
+        Get.offAll(() => const HomeScreen());
+      });
     });
   }
 
   @override
   void onInit() async {
     super.onInit();
-
     await load();
   }
 }
