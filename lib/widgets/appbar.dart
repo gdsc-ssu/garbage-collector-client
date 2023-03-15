@@ -1,8 +1,6 @@
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:garbage_collector/states/states.dart';
-import 'package:garbage_collector/screens/screens.dart';
 
 class CustomAppBar extends StatelessWidget with PreferredSizeWidget {
   final bool allowBackButton;

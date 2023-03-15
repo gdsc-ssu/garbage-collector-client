@@ -1,12 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/models/models.dart';
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/widgets/widgets.dart';
-import 'package:get/get.dart';
 import 'package:garbage_collector/styles/color.dart';
-import 'package:garbage_collector/states/states.dart';
 
 class RankScreen extends StatefulWidget {
   const RankScreen({super.key});
@@ -15,7 +11,6 @@ class RankScreen extends StatefulWidget {
 }
 
 class _RankScreen extends State<RankScreen> {
-  final _globalStates = Get.find<GlobalState>();
   List<Ranker> _rankers = [];
 
   @override
