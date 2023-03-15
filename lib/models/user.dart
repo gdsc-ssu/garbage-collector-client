@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:http/http.dart' as http;
 
 import 'package:garbage_collector/utils/utils.dart';
@@ -9,14 +8,13 @@ class User {
   final int id;
   final String? profileImg;
   final String? nickname;
-  final String? email;
+  final String email;
   final int general;
   final int plastic;
   final int can;
   final int glass;
   final int paper;
   final String? accessToken;
-  final String? refreshToken;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -31,7 +29,6 @@ class User {
     this.glass,
     this.paper,
     this.accessToken,
-    this.refreshToken,
     this.createdAt,
     this.updatedAt,
   );
@@ -48,7 +45,6 @@ class User {
       json['glass'] as int,
       json['paper'] as int,
       json['accessToken'] as String?,
-      json['refreshToken'] as String?,
       DateTime.parse(json['createdAt'] as String),
       DateTime.parse(json['updatedAt'] as String),
     );
@@ -72,7 +68,6 @@ class User {
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      log(response.body);
       return User.fromJson(json.decode(response.body)['result']);
     } else {
       throw newHTTPException(response.statusCode, response.body);

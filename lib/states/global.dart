@@ -107,7 +107,6 @@ class GlobalState extends GetxController {
     token = newUser.accessToken!;
     SharedPreferences.getInstance().then((pref) {
       pref.setString('accessToken', newUser.accessToken!);
-      pref.setString('refreshToken', newUser.refreshToken!);
     });
   }
 
