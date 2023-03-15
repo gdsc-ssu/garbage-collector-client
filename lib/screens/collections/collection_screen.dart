@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:garbage_collector/styles/styles.dart';
 import 'package:garbage_collector/screens/screens.dart';
 import 'package:garbage_collector/styles/color.dart';
@@ -7,7 +9,6 @@ import 'package:garbage_collector/utils/utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:garbage_collector/widgets/widgets.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/exceptions/exceptions.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class CollectionScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class CollectionScreen extends StatefulWidget {
 
 class _CollectionScreenState extends State<CollectionScreen> {
   final _globalStates = Get.find<GlobalState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,15 +28,12 @@ class _CollectionScreenState extends State<CollectionScreen> {
         child: (_globalStates.user.value == null)
             ? const BeforeLogin()
             : Column(
-                children: <Widget>[
+                children: [
                   SizedBox(
                     height: Get.height * 0.33,
-                    child: MyInfoBox(),
+                    child: const MyInfoBox(),
                   ),
-                  SizedBox(
-                    height: Get.height * 0.53,
-                    child: CollectionBox(),
-                  ),
+                  const CollectionBox(),
                 ],
               ),
       ),
@@ -54,7 +53,8 @@ class _BeforeLoginState extends State<BeforeLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
+        width: Get.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -86,17 +86,11 @@ class _BeforeLoginState extends State<BeforeLogin> {
             ),
             GestureDetector(
               onTap: () async {
-                await _globalStates.googleAuth();
-                setState(() {});
-                if (_globalStates.user.value != null) {
-                  Get.offAll(() => const HomeScreen());
-                }
+                await _globalStates.googleAuth().then((value) {
+                  Get.offAll(() => const HomeScreen(initScreenIndex: 0));
+                });
               },
-              child: Container(
-                height: 70,
-                width: Get.width * 1,
-                child: const googleLogin(),
-              ),
+              child: const GoogleLogin(),
             ),
           ],
         ),
@@ -114,138 +108,150 @@ class MyInfoBox extends StatefulWidget {
 
 class _MyInfoBoxState extends State<MyInfoBox> {
   final _globalStates = Get.find<GlobalState>();
+  int _totalLevel = 0;
+  int _percent = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = _globalStates.user.value!;
+    int total =
+        user.general + user.plastic + user.can + user.glass + user.paper;
+
+    _totalLevel = (total ~/ 10) + 4;
+    _percent = (total % 10);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        margin: const EdgeInsets.only(left: 30, right: 30, top: 30),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              margin: EdgeInsets.only(bottom: Get.height * 0.01),
-              child: const Text(
-                "My Info",
-                style: TextStyle(
-                  color: Color.fromRGBO(94, 151, 85, 1),
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
+    return Container(
+      margin: const EdgeInsets.fromLTRB(30, 30, 30, 30),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: Get.height * 0.01),
+            child: const Text(
+              "My Info",
+              style: TextStyle(
+                color: Color.fromRGBO(94, 151, 85, 1),
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            Container(
-              height: 150,
-              padding: const EdgeInsets.only(
-                  left: 20, right: 20, top: 10, bottom: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(15),
+          ),
+          Container(
+            height: 150,
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(15),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.7),
+                  spreadRadius: 0,
+                  blurRadius: 5.0,
+                  offset: const Offset(2, 2), // changes position of shadow
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.7),
-                    spreadRadius: 0,
-                    blurRadius: 5.0,
-                    offset: const Offset(2, 2), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Flexible(
-                        flex: 2,
-                        child: Icon(
-                          Icons.account_circle_rounded,
-                          color: Color.fromRGBO(0, 0, 0, 0.7),
-                          size: 60,
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+                          child: CircularProfileImage(
+                            imgUrl: _globalStates.user.value!.profileImg!,
+                            size: 46,
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              _globalStates.user.value!.nickname ?? '익명',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            Text(
+                              _globalStates.user.value!.email,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                color: Color.fromRGBO(153, 153, 153, 1),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    Container(
+                      width: 70,
+                      height: 30,
+                      decoration: const BoxDecoration(
+                        color: Color.fromRGBO(94, 151, 85, 1),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
                         ),
                       ),
-                      Flexible(
-                        flex: 5,
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            children: const <Widget>[
-                              Text(
-                                "Eddy Sim",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              Text(
-                                "asdfwq@gmail.com",
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Color.fromRGBO(153, 153, 153, 1),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ), //user name
-                      Flexible(
-                        flex: 3,
-                        child: Container(
-                          alignment: Alignment.centerRight,
-                          height: 30,
-                          decoration: const BoxDecoration(
-                            color: Color.fromRGBO(94, 151, 85, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                          child: GestureDetector(
-                            onTap: () async {
-                              await _globalStates.signOut();
-                              setState(() {
-                                Get.offAll(() => const HomeScreen());
-                              });
-                            },
-                            child: const Center(
-                              child: Text(
-                                "로그아웃",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
+                      child: GestureDetector(
+                        onTap: () async {
+                          _globalStates.signOut().then((value) {
+                            Get.offAll(
+                                () => const HomeScreen(initScreenIndex: 0));
+                          });
+
+                          setState(() {});
+                        },
+                        child: const Center(
+                          child: Text(
+                            "로그아웃",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
                             ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
                     ),
-                    child: const Text(
-                      "LV 7", //user level
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
+                  ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: Text(
+                    'Lv $_totalLevel',
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
                   ),
-                  Container(
-                    height: 10,
-                    width: 300,
-                    decoration: const BoxDecoration(
-                        color: Color.fromRGBO(77, 161, 64, 1),
-                        borderRadius: BorderRadius.all(Radius.circular(15))),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
+                ),
+                TweenAnimationBuilder(
+                    tween: Tween<double>(begin: 0, end: _percent / 10),
+                    duration: const Duration(milliseconds: 500),
+                    builder: (context, value, child) => LinearProgressIndicator(
+                          value: value,
+                          backgroundColor: Colors.grey,
+                        )),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
@@ -278,7 +284,7 @@ final List<Image> collectionTrashCharacter = [
   TrashCharacter.plastic,
   TrashCharacter.general,
   TrashCharacter.glass,
-  TrashCharacter.milk,
+  TrashCharacter.paper,
   TrashCharacter.can,
 ];
 
@@ -298,277 +304,236 @@ class CollectionBox extends StatefulWidget {
 }
 
 class _CollectionBoxState extends State<CollectionBox> {
-  int indicatorIndex = 0;
-  final collectionDurationValue = 300;
-  CarouselController buttonCarouselController = CarouselController();
+  int _indicatorIndex = 0;
+  final int _collectionDurationValue = 300;
+  final CarouselController _buttonCarouselController = CarouselController();
+
+  Widget _indicator(int curIndex) => Container(
+        margin: const EdgeInsets.only(top: 10),
+        alignment: Alignment.bottomCenter,
+        child: AnimatedSmoothIndicator(
+          duration: const Duration(milliseconds: 100),
+          activeIndex: curIndex,
+          count: 5,
+          effect: WormEffect(
+              dotHeight: 15,
+              dotWidth: 15,
+              activeDotColor: collectionInnerColors[curIndex],
+              dotColor: Colors.white.withOpacity(0.6)),
+        ),
+      );
+
+  // Widget imageSlider(path, index) => Container(
+  //       width: double.infinity,
+  //       height: Get.height * 0.2,
+  //       color: Colors.grey,
+  //       child: Image.asset(path, fit: BoxFit.cover),
+  //     );
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        alignment: Alignment.center,
-        margin: const EdgeInsets.only(
-          left: 30,
-          right: 30,
-        ),
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(bottom: Get.height * 0.02),
-              child: const Text(
-                "Collection",
-                style: TextStyle(
-                  color: Color.fromRGBO(94, 151, 85, 1),
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
+    return Container(
+      alignment: Alignment.center,
+      margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+            child: const Text(
+              "Collection",
+              style: TextStyle(
+                color: Color.fromRGBO(94, 151, 85, 1),
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(
-              child: Container(
-                margin: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                ),
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    CarouselSlider.builder(
-                      carouselController: buttonCarouselController,
-                      itemCount: 5, //쓰레기 종류 갯수
-                      itemBuilder: (context, index, realIndex) {
-                        return Container(
-                          margin: EdgeInsets.only(left: 20, right: 20),
-                          child: Stack(
-                            children: [
-                              Container(
-                                height: Get.height * 0.4,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.9),
-                                      spreadRadius: 0,
-                                      blurRadius: 5.0,
-                                      offset: const Offset(
-                                          1, 5), // changes position of shadow
+          ),
+          Container(
+            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            height: 340,
+            child: Stack(
+              children: [
+                CarouselSlider.builder(
+                  carouselController: _buttonCarouselController,
+                  itemCount: 5,
+                  itemBuilder: (context, index, realIndex) {
+                    double randomNumber = Random().nextDouble();
+                    return Container(
+                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+                      child: Container(
+                        height: 300,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.9),
+                              spreadRadius: 0,
+                              blurRadius: 5.0,
+                              offset: const Offset(1, 5),
+                            ),
+                          ],
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(15)),
+                          gradient: LinearGradient(
+                            begin: FractionalOffset.topLeft,
+                            end: FractionalOffset.bottomRight,
+                            colors: [
+                              collectionOuterTopLeftColors[index],
+                              collectionOuterBottomRightColors[index],
+                            ],
+                            stops: const [0.1, 1],
+                          ),
+                        ),
+                        child: Column(children: [
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin:
+                                      const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                  child: Text(
+                                    collectionName[index],
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
                                     ),
-                                  ],
-                                  borderRadius: const BorderRadius.all(
-                                    Radius.circular(
-                                      15,
-                                    ),
-                                  ),
-                                  gradient: LinearGradient(
-                                    begin: FractionalOffset.topLeft,
-                                    end: FractionalOffset.bottomRight,
-                                    colors: [
-                                      collectionOuterTopLeftColors[index],
-                                      collectionOuterBottomRightColors[index],
-                                    ],
-                                    stops: const [0.1, 1],
                                   ),
                                 ),
-                              ),
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        top: 5,
-                                        bottom: 10,
+                                Container(
+                                  width: 200,
+                                  height: 200,
+                                  margin:
+                                      const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.4),
+                                        spreadRadius: 0,
+                                        blurRadius: 5.0,
+                                        offset: const Offset(1, 5),
                                       ),
-                                      child: Text(
-                                        collectionName[index],
+                                    ],
+                                    color:
+                                        collectionInnerColors.elementAt(index),
+                                    borderRadius: const BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 170,
+                                        child: collectionTrashCharacter[index],
+                                      ),
+                                      Text(
+                                        () {
+                                          if (index == 0) {
+                                            return "Lv 2  방그레";
+                                          }
+                                          if (index == 1) {
+                                            return "Lv 3  날버리지마";
+                                          }
+                                          if (index == 2) {
+                                            return "Lv 1  비타솔챌";
+                                          }
+                                          if (index == 3) {
+                                            return "Lv 2  밀키밀키";
+                                          }
+                                          if (index == 4) {
+                                            return "Lv 4  콜라버려러러";
+                                          }
+                                          return "LV ?  최강의 쓰레기";
+                                        }(),
                                         style: const TextStyle(
                                           color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
                                         ),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    SizedBox(
+                                      height: 7,
+                                      width: 150,
+                                      child: TweenAnimationBuilder(
+                                          tween: Tween<double>(
+                                              begin: 0, end: randomNumber),
+                                          duration:
+                                              const Duration(milliseconds: 500),
+                                          builder: (context, value, child) =>
+                                              LinearProgressIndicator(
+                                                value: value,
+                                                backgroundColor: Colors.grey,
+                                              )),
                                     ),
-                                    Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Container(
-                                          height: Get.height * 0.26,
-                                          width: 200,
-                                          decoration: BoxDecoration(
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.4),
-                                                spreadRadius: 0,
-                                                blurRadius: 5.0,
-                                                offset: const Offset(1,
-                                                    5), // changes position of shadow
-                                              ),
-                                            ],
-                                            color: collectionInnerColors
-                                                .elementAt(index),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                              Radius.circular(15),
-                                            ),
-                                          ),
-                                        ),
-                                        Column(
-                                          children: [
-                                            SizedBox(
-                                              height: Get.height * 0.24,
-                                              child: collectionTrashCharacter[
-                                                  index],
-                                            ),
-                                            const SizedBox(
-                                              child: Text(
-                                                "LV 1   콜라버려려려러",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
+                                    Text(
+                                      "${(randomNumber * 100).toInt()}%",
+                                      style:
+                                          const TextStyle(color: Colors.white),
                                     ),
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        top: Get.height * 0.01,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Flexible(
-                                            flex: 8,
-                                            child: Container(
-                                              width: 150,
-                                              height: 7,
-                                              decoration: const BoxDecoration(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)),
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          Flexible(
-                                            flex: 2,
-                                            child: Container(
-                                              alignment: Alignment.centerRight,
-                                              child: Text(
-                                                "$index%",
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 30,
-                                    )
                                   ],
                                 ),
-                              ),
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      buttonCarouselController.previousPage(
-                                          duration: Duration(
-                                              milliseconds:
-                                                  collectionDurationValue),
-                                          curve: Curves.linear),
-                                  child: const Icon(
-                                    Icons.chevron_left,
-                                    color: Color.fromRGBO(255, 255, 255, 0.8),
-                                    size: 40,
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                alignment: Alignment.centerRight,
-                                // margin: EdgeInsets.only(right: 6),
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      buttonCarouselController.nextPage(
-                                          duration: Duration(
-                                              milliseconds:
-                                                  collectionDurationValue),
-                                          curve: Curves.linear),
-                                  child: const Icon(
-                                    Icons.chevron_right,
-                                    color: Color.fromRGBO(255, 255, 255, 0.8),
-                                    size: 40,
-                                  ),
-                                ),
-                              ),
-                            ],
+                                _indicator(_indicatorIndex),
+                              ],
+                            ),
                           ),
-                        );
-                      },
-                      options: CarouselOptions(
-                        onPageChanged: (pageindex, reason) => setState(() {
-                          indicatorIndex = pageindex;
-                        }),
-                        height: Get.height * 0.415,
-                        viewportFraction: 1,
+                        ]),
+                      ),
+                    );
+                  },
+                  options: CarouselOptions(
+                    onPageChanged: (pageindex, reason) => setState(() {
+                      _indicatorIndex = pageindex;
+                    }),
+                    height: Get.height * 0.415,
+                    viewportFraction: 1,
+                  ),
+                ),
+                Positioned.fill(
+                  right: 20,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: () => _buttonCarouselController.nextPage(
+                          duration:
+                              Duration(milliseconds: _collectionDurationValue),
+                          curve: Curves.linear),
+                      child: const Icon(
+                        Icons.chevron_right,
+                        color: Color.fromRGBO(255, 255, 255, 0.8),
+                        size: 40,
                       ),
                     ),
-                    Align(
-                        alignment: Alignment.bottomCenter,
-                        child: indicator(indicatorIndex))
-                  ],
+                  ),
                 ),
-              ),
+                Positioned.fill(
+                  left: 20,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: GestureDetector(
+                      onTap: () => _buttonCarouselController.previousPage(
+                          duration:
+                              Duration(milliseconds: _collectionDurationValue),
+                          curve: Curves.linear),
+                      child: const Icon(
+                        Icons.chevron_left,
+                        color: Color.fromRGBO(255, 255, 255, 0.8),
+                        size: 40,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
-
-class CollentionBottomColor extends StatefulWidget {
-  const CollentionBottomColor({super.key, required this.index});
-
-  final int index;
-  @override
-  State<CollentionBottomColor> createState() => _CollentionBottomColorState();
-}
-
-class _CollentionBottomColorState extends State<CollentionBottomColor> {
-  @override
-  Widget build(BuildContext context) {
-    return Icon(
-      Icons.circle,
-      size: 15,
-      color: collectionInnerColors.elementAt(widget.index),
-    );
-  }
-}
-
-Widget imageSlider(path, index) => Container(
-      width: double.infinity,
-      height: Get.height * 0.2,
-      color: Colors.grey,
-      child: Image.asset(path, fit: BoxFit.cover),
-    );
-
-Widget indicator(int curIndex) => Container(
-      margin: EdgeInsets.only(bottom: Get.height * 0.025),
-      alignment: Alignment.bottomCenter,
-      child: AnimatedSmoothIndicator(
-        duration: const Duration(milliseconds: 100),
-        activeIndex: curIndex,
-        count: 5,
-        effect: WormEffect(
-            dotHeight: 15,
-            dotWidth: 15,
-            activeDotColor: collectionInnerColors[curIndex],
-            dotColor: Colors.white.withOpacity(0.6)),
-      ),
-    );
