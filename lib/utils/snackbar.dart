@@ -23,7 +23,8 @@ void trashSnackbar(String type) {
       ),
     ),
     onTap: (snackbar) {
-      Get.dialog(ItemCardDialog(type: type));
+      Get.dialog(
+          ItemCardDialog(type: trashTranslate[type.toLowerCase()] ?? '일반'));
     },
     overlayColor: ColorSystem.primary,
     duration: const Duration(seconds: 3),
