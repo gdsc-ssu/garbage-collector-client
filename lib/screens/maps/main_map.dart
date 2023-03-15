@@ -166,7 +166,7 @@ class _MainMap extends State<MainMap> {
                 alignment: Alignment.bottomCenter,
                 child: GestureDetector(
                   onTap: () {
-                    Get.to(() => const CameraScreen(isThrowable: false));
+                    Get.to(() => const CameraScreen(isThrowable: true));
                   },
                   child: Container(
                       padding: const EdgeInsets.all(5),
