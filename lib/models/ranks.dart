@@ -5,7 +5,7 @@ import 'package:garbage_collector/utils/utils.dart';
 
 class Ranker {
   final int id;
-  final String nickname;
+  final String? nickname;
   final String profileImg;
   final int totalScore;
 
@@ -14,7 +14,7 @@ class Ranker {
   factory Ranker.fromJson(Map<String, dynamic> json) {
     return Ranker(
       json['id'] as int,
-      json['nickname'] as String,
+      (json['nickname'] == null) ? null : json['nickname'] as String,
       json['profileImg'] as String,
       json['totalScore'] as int,
     );
