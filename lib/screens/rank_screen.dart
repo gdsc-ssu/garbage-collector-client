@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:garbage_collector/models/models.dart';
 import 'package:garbage_collector/styles/styles.dart';
@@ -11,22 +13,10 @@ class RankScreen extends StatefulWidget {
 }
 
 class _RankScreen extends State<RankScreen> {
-  List<Ranker> _rankers = [];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  Future<List<Ranker>> _loadRanker() async {
-    _rankers = await Ranker.totalRank();
-    return _rankers;
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: _loadRanker(),
+      future: Ranker.totalRank(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return Scaffold(
@@ -46,7 +36,7 @@ class _RankScreen extends State<RankScreen> {
               ),
               child: Column(
                 children: [
-                  TopThreeRanks(_rankers),
+                  TopThreeRanks(snapshot.data!),
                   Flexible(
                     flex: 6,
                     child: ClipRRect(
@@ -55,7 +45,7 @@ class _RankScreen extends State<RankScreen> {
                           topRight: Radius.circular(50)),
                       child: Container(
                         color: Colors.white,
-                        child: RankListView(rankers: _rankers),
+                        child: RankListView(rankers: snapshot.data!),
                       ),
                     ),
                   ),
@@ -115,7 +105,7 @@ class TopThreeRanks extends StatelessWidget {
                           )
                         : CircularProfileImage(imgUrl: ranker[1].profileImg),
                     Text(
-                      ranker[1].nickname,
+                      ranker[1].nickname ?? '익명',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -171,7 +161,7 @@ class TopThreeRanks extends StatelessWidget {
                           )
                         : CircularProfileImage(imgUrl: ranker[0].profileImg),
                     Text(
-                      ranker[0].nickname,
+                      ranker[0].nickname ?? '익명',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -227,7 +217,7 @@ class TopThreeRanks extends StatelessWidget {
                           )
                         : CircularProfileImage(imgUrl: ranker[2].profileImg),
                     Text(
-                      ranker[2].nickname,
+                      ranker[2].nickname ?? '익명',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -326,7 +316,7 @@ class RankListView extends StatelessWidget {
                   SizedBox(
                     width: 200,
                     child: Text(
-                      ranker.nickname,
+                      ranker.nickname ?? '익명',
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
