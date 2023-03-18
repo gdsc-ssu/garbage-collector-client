@@ -1,4 +1,4 @@
-package com.example.garbage_collector
+package com.garbage-collection.app
 
 import io.flutter.embedding.android.FlutterActivity
 
