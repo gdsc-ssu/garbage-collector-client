@@ -11,6 +11,12 @@
 - Jungmin Lee (Department of Computer Science, Soongsil University)
 - Hwangon Jang (Department of Software, Soongsil University)
 
+### Related Repository
+
+- [Garbage Collection Client](https://github.com/gdsc-ssu/garbage-collector-client)
+- [Garbage Collection Server](https://github.com/gdsc-ssu/garbage-collector-back)
+- [Garbage Collection AI](https://github.com/gdsc-ssu/garbage-collector-ai-server)
+
 ### Introduction Our Solution
 
 - By using our app, users can identify the type of trash they need to dispose of through AI, as well as locate nearby garbage cans
